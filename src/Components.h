@@ -3,7 +3,13 @@
 #include <SFML/Graphics.hpp>
 #include "Vec2.h"
 
-class CTransform
+class Component
+{
+public:
+    bool has = false;
+};
+
+class CTransform : public Component
 {
 public:
     Vec2 position         = {0.0, 0.0};
@@ -12,10 +18,11 @@ public:
     Vec2 scale            = {1.0, 1.0};
     double angle          = 0;
 
+    CTransform() {};
     CTransform(const Vec2& p) : position(p) {}
 };
 
-class CLifespan
+class CLifespan : public Component
 {
 public:
     int remaining = 0;
@@ -24,7 +31,7 @@ public:
     CLifespan(int total) : remaining(total), total(total) {}
 };
 
-class CInput
+class CInput : public Component
 {
 public:
     bool up    = false;
@@ -36,7 +43,7 @@ public:
     CInput() {};
 };
 
-class CBoundingBox
+class CBoundingBox : public Component
 {
 public:
     Vec2 size;
@@ -45,14 +52,14 @@ public:
     CBoundingBox(const Vec2& s) : size(s), halfSize(s.x / 2, s.y / 2) {}
 };
 
-class CAnimation
+class CAnimation : public Component
 {
 };
 
-class CGravity
+class CGravity : public Component
 {
 };
 
-class CState
+class CState : public Component
 {
 };
