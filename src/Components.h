@@ -18,7 +18,7 @@ public:
     Vec2 scale            = {1.0, 1.0};
     double angle          = 0;
 
-    CTransform() {};
+    CTransform() {}
     CTransform(const Vec2& p) : position(p) {}
 };
 
@@ -28,6 +28,7 @@ public:
     int remaining = 0;
     int total     = 0;
 
+    CLifespan() {}
     CLifespan(int total) : remaining(total), total(total) {}
 };
 
@@ -40,7 +41,7 @@ public:
     bool down  = false;
     bool shoot = false;
 
-    CInput() {};
+    CInput() {}
 };
 
 class CBoundingBox : public Component
@@ -49,17 +50,24 @@ public:
     Vec2 size;
     Vec2 halfSize;
 
+    CBoundingBox() {}
     CBoundingBox(const Vec2& s) : size(s), halfSize(s.x / 2, s.y / 2) {}
 };
 
 class CAnimation : public Component
 {
+public:
+    CAnimation() {}
 };
 
 class CGravity : public Component
 {
+public:
+    CGravity() {}
 };
 
 class CState : public Component
 {
+public:
+    CState() {}
 };
