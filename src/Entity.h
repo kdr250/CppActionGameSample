@@ -47,4 +47,16 @@ public:
     {
         return std::get<T>(m_components);
     }
+
+    template<typename T>
+    const T& getComponent() const
+    {
+        return std::get<T>(m_components);
+    }
+
+    template<typename T>
+    void removeComponent()
+    {
+        getComponent<T> = T();
+    }
 };
