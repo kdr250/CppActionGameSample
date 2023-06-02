@@ -16,10 +16,10 @@ private:
 public:
     Assets();
 
-    void addTexture(const std::string& name, const std::string path);
-    void addAnimation(const std : string& name, Animation& animation);
-    void addSound(const std::string& name, const std::string path);
-    void addFont(const std::string& name, const std::string path);
+    void addTexture(const std::string& name, const std::string& path);
+    void addAnimation(const std::string& name, Animation& animation);
+    void addSound(const std::string& name, const std::string& path);
+    void addFont(const std::string& name, const std::string& path);
 
     sf::Texture& getTexture(const std::string& name) const;
     Animation& getAnimation(const std::string& name) const;
