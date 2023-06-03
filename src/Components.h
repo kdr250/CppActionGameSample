@@ -58,9 +58,10 @@ public:
 class CAnimation : public Component
 {
 public:
-    CAnimation() {}
-
     Animation animation;
+
+    CAnimation() {}
+    CAnimation(const Animation& animation) : animation(animation) {};
 };
 
 class CGravity : public Component
