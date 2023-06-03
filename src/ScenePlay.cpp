@@ -15,8 +15,6 @@ void ScenePlay::init(const std::string& levelPath)
     m_gridText.setFont(m_game->getAssets().getFont("Roboto-Light.ttf");
 
     loadLevel(levelPath);
-
-    // TODO: Not Yet Implemented
 }
 
 void ScenePlay::loadLevel(const std::string& filename) {}
