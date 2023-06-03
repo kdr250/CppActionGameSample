@@ -39,4 +39,6 @@ public:
 
     virtual void onEnd() override;
     virtual void sDoAction(const Action& action) override;
+
+    Vec2 gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity);
 };

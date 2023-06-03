@@ -44,3 +44,8 @@ void ScenePlay::sDebug() {}
 void ScenePlay::onEnd() {}
 
 void ScenePlay::sDoAction(const Action& action) {}
+
+Vec2 ScenePlay::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity)
+{
+    return Vec2();
+}
