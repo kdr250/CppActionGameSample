@@ -2,6 +2,8 @@
 
 Assets::Assets() {}
 
+void Assets::loadFromFile(const std::string path) {}
+
 void Assets::addTexture(const std::string& name, const std::string& path)
 {
     sf::Texture texture;
