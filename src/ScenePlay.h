@@ -25,6 +25,8 @@ protected:
     void loadLevel(const std::string& filename);
 
 public:
+    ScenePlay(GameEngine* gameEngie, const std::string& levelPath);
+
     void update();
 
     void sAnimation();
