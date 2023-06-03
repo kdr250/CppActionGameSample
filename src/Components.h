@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "Animation.h"
 #include "Vec2.h"
 
 class Component
@@ -58,6 +59,8 @@ class CAnimation : public Component
 {
 public:
     CAnimation() {}
+
+    Animation animation;
 };
 
 class CGravity : public Component

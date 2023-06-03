@@ -29,10 +29,12 @@ public:
 
     void update();
 
+    void spawnPlayer();
+
     void sAnimation();
     void sMovement();
     void sEnemySpawner();
-    void SCollision();
+    void sCollision();
     void sRender();
     void sDoAction(Action& action);
     void sDebug();
