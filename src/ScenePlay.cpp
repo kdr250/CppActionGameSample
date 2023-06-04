@@ -170,9 +170,55 @@ void ScenePlay::sRender()
     }
 
     // draw all Entity collision bouding boxes with a rectangle shape
+    if (m_drawCollision)
+    {
+        for (auto entity : m_entityManager.getEntities())
+        {
+            if (entity->hasComponent<CBoundingBox>())
+            {
+                auto& box       = entity->getComponent<CBoundingBox>();
+                auto& transform = entity->getComponent<CTransform>();
+                sf::RectangleShape rectangle;
+                rectangle.setSize(sf::Vector2f(box.size.x - 1, box.size.y - 1));
+                rectangle.setOrigin(sf::Vector2f(box.halfSize.x, box.halfSize.y));
+                rectangle.setPosition(transform.position.x, transform.position.y);
+                rectangle.setFillColor(sf::Color(0, 0, 0, 0));
+                rectangle.setOutlineColor(sf::Color(255, 255, 255, 255));
+                rectangle.getOutlineThickness(1);
+                m_game->window().draw(rectangle);
+            }
+        }
+    }
+
+    // draw the grid so that developer can easily debug
+    if (m_drawGrid)
+    {
+        float leftX     = m_game->window().getView().getCenter().x - width() / 2;
+        float rightX    = leftX + width() + m_gridSize.x;
+        float nextGridX = leftX - ((int)leftX & (int)m_gridSize.x);
+
+        for (float x = nextGridX; x < rightX; x += m_gridSize.x)
+        {
+            drawLine(Vec2(x, 0), Vec2(x, height()));
+        }
+
+        for (float y = 0; y < height(); y += m_gridSize.x)
+        {
+            drawLine(Vec2(leftX, height() - y), Vec2(rightX, height() - y));
+
+            for (float x = nextGridX; x < rightX; x += m_gridSize.x)
+            {
+                std::string xCell = stsd::to_string((int)x / (int)m_gridSize.x);
+                std::string yCell = stsd::to_string((int)y / (int)m_gridSize.y);
+                m_gridText.setString("(" + xCell + ", " + yCell + ")");
+                m_gridText.setPosition(x + 3, height() - y - m_gridSize.y + 2);
+                m_game->window().draw(m_gridText);
+            }
+        }
+    }
 }
 
-void ScenePlay::sDoAction(Action& action)
+void ScenePlay::sDoAction(const Action& action)
 {
     if (action.type() == "START")
     {
@@ -208,9 +254,11 @@ void ScenePlay::sDoAction(Action& action)
 
 void ScenePlay::sDebug() {}
 
-void ScenePlay::onEnd() {}
-
-void ScenePlay::sDoAction(const Action& action) {}
+void ScenePlay::onEnd()
+{
+    // TODO: When the scene ends, change back to the MENU scene
+    //       use m_game->changeScene(XXX)
+}
 
 Vec2 ScenePlay::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity)
 {
