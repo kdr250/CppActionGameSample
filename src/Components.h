@@ -59,19 +59,26 @@ class CAnimation : public Component
 {
 public:
     Animation animation;
+    bool repeat = false;
 
     CAnimation() {}
-    CAnimation(const Animation& animation) : animation(animation) {};
+    CAnimation(const Animation& animation, bool r) : animation(animation), repeat(r) {};
 };
 
 class CGravity : public Component
 {
 public:
+    float gravity = 0;
+
     CGravity() {}
+    CGravity(float g) : gravity(g) {}
 };
 
 class CState : public Component
 {
 public:
+    std::string state = "jumping";
+
     CState() {}
+    CState(const std::string& s) : state(s) {}
 };

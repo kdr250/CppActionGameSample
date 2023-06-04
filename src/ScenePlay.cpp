@@ -56,6 +56,8 @@ ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath) :
 
 void ScenePlay::update()
 {
+    m_entityManager.update();
+
     // TODO: Implement pause functionality
 
     sMovement();
@@ -65,36 +67,71 @@ void ScenePlay::update()
     sRender();
 }
 
-void ScenePlay::spawnPlayer() {}
+void ScenePlay::spawnPlayer()
+{
+    m_player = m_entityManager.addEntity("player");
+    m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Stand"), true);
+    m_player->addComponent<CTransform>(Vec2(224, 352));
+    m_player->addComponent<CBoundingBox>(Vec2(48, 48));
+    m_player->addComponent<CGravity>(0.1);
+}
 
-void ScenePlay::sAnimation() {}
+void ScenePlay::sAnimation()
+{
+    if (m_player->getComponent<CState>().state == "air")
+    {
+        m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Air"));
+    }
+    if (m_player->getComponent<CState>().state == "run")
+    {
+        m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Run"));
+    }
+
+    // TODO: for each entity with an animation, call entity->getComponent<CAnimation>().animation.update()
+    //       if the animation is not repeated, and it has ended, destroy the entity
+}
 
 void ScenePlay::sMovement()
 {
-    Vec2 playerVelocity(0, 0);
+    Vec2 playerVelocity(0, m_player->getComponent<CTransform>().velocity.y);
 
     if (m_player->getComponent<CInput>().up)
     {
-        playerVelocity.y = -3;
+        m_player->getComponent<CState>().state = "run";
+        playerVelocity.y                       = -3;
     }
 
     m_player->getComponent<CTransform>().velocity = playerVelocity;
 
     for (auto entity : m_entityManager.getEntities())
     {
+        if (entity->hasComponent<CGravity>())
+        {
+            entity->getComponent<CTransform>().velocity.y +=
+                entity->getComponent<CGravity>().gravity;
+        }
         entity->getComponent<CTransform>().position += entity->getComponent<CTransform>().velocity;
     }
 
-    // TODO: Implement gravity's effect on the player
     // TODO: Implement the maximum player speed in both X and Y directions
     // NOTE: Setting an entity's scale.x to -1/1 will make it face to the left/right
 }
 
-void ScenePlay::sLifeSpan() {}
+void ScenePlay::sLifeSpan()
+{
+    // TODO: Check lifespan of entities that have them, and destroy them if they go over
+}
 
 void ScenePlay::sEnemySpawner() {}
 
-void ScenePlay::sCollision() {}
+void ScenePlay::sCollision()
+{
+    // TODO: SFML's (0,0) position is on the TOP-LEFT corner
+    //       This means jumping will have a negative y-component
+    //       and gravity will have a positive y-component
+    //       Also, something BELOW something else will have a y value GREATER than it
+    //       Also, something ABOVE something else will have a y value LESS than it
+}
 
 void ScenePlay::sRender()
 {
