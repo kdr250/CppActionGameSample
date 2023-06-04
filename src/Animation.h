@@ -20,6 +20,7 @@ public:
     Animation(const std::string& name, const sf::Texture& t, int frameCount, int speed);
 
     void update();
+
     std::string& getName();
     Vec2& getSize();
     sf::Sprite& getSprite();

@@ -33,6 +33,7 @@ public:
 
     void sAnimation();
     void sMovement();
+    void sLifeSpan();
     void sEnemySpawner();
     void sCollision();
     void sRender();

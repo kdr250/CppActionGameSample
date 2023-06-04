@@ -5,6 +5,8 @@
 */
 Vec2 Physics::getOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b)
 {
+    auto& position = a->getComponent<CTransform>();
+
     return Vec2();
 }
 

@@ -1,4 +1,5 @@
 #include "ScenePlay.h"
+#include <cmath>
 #include "GameEngine.h"
 
 void ScenePlay::init(const std::string& levelPath)
@@ -53,19 +54,86 @@ ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath) :
     init(m_levelPath);
 }
 
-void ScenePlay::update() {}
+void ScenePlay::update()
+{
+    // TODO: Implement pause functionality
+
+    sMovement();
+    sLifeSpan();
+    sCollision();
+    sAnimation();
+    sRender();
+}
 
 void ScenePlay::spawnPlayer() {}
 
 void ScenePlay::sAnimation() {}
 
-void ScenePlay::sMovement() {}
+void ScenePlay::sMovement()
+{
+    Vec2 playerVelocity(0, 0);
+
+    if (m_player->getComponent<CInput>().up)
+    {
+        playerVelocity.y = -3;
+    }
+
+    m_player->getComponent<CTransform>().velocity = playerVelocity;
+
+    for (auto entity : m_entityManager.getEntities())
+    {
+        entity->getComponent<CTransform>().position += entity->getComponent<CTransform>().velocity;
+    }
+
+    // TODO: Implement gravity's effect on the player
+    // TODO: Implement the maximum player speed in both X and Y directions
+    // NOTE: Setting an entity's scale.x to -1/1 will make it face to the left/right
+}
+
+void ScenePlay::sLifeSpan() {}
 
 void ScenePlay::sEnemySpawner() {}
 
 void ScenePlay::sCollision() {}
 
-void ScenePlay::sRender() {}
+void ScenePlay::sRender()
+{
+    if (!m_paused)
+    {
+        m_game->window().clear(sf::Color(100, 100, 255));
+    }
+    else
+    {
+        m_game->window().clear(sf::Color(50, 50, 150));
+    }
+
+    // set the viewport of the window to be centered on the player if it's far enough right
+    auto& playerPosition = m_player->getComponent<CTransform>().position;
+    float windowCenterX  = std::max(m_game->window().getSize().x / 2.0f, playerPosition.x);
+    sf::View view        = m_game->window().getView();
+    view.setCenter(windowCenterX, m_game->window().getSize().y - view.getCenter().y);
+    m_game->window().setView(view);
+
+    // draw all Entity textures / animations
+    if (m_drawTextures)
+    {
+        for (auto entity : m_entityManager.getEntities())
+        {
+            auto& transform = entity->getComponent<CTransform>();
+
+            if (entity->hasComponent<CAnimation>())
+            {
+                auto& animation = entity->getComponent<CAnimation>().animation;
+                animation.getSprite().setRotation(transform.angle);
+                animation.getSprite().setPosition(transform.position.x, transform.position.y);
+                animation.getSprite().setScale(transform.scale.x, transform.scale.y);
+                m_game->window().draw(animation.getSprite());
+            }
+        }
+    }
+
+    // draw all Entity collision bouding boxes with a rectangle shape
+}
 
 void ScenePlay::sDoAction(Action& action)
 {
