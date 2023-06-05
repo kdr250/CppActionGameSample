@@ -4,7 +4,8 @@
 
 void GameEngine::init(const std::string& path)
 {
-    m_assets.loadFromFile(path);
+    // TODO: comment out for test
+    //m_assets.loadFromFile(path);
 
     m_window.create(sf::VideoMode(1280, 768), "Action Game");
     m_window.setFramerateLimit(60);
@@ -12,7 +13,14 @@ void GameEngine::init(const std::string& path)
     changeScene("MENU", std::make_shared<SceneMenu>(this));
 }
 
-void GameEngine::update() {}
+void GameEngine::update()
+{
+    m_window.clear();
+    sUserInput();
+    currentScene()->update();
+    currentScene()->sRender();
+    m_window.display();
+}
 
 void GameEngine::sUserInput()
 {
@@ -41,7 +49,7 @@ void GameEngine::sUserInput()
 
         if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased)
         {
-            if (currentScene()->getActionMap().find(event.key.code())
+            if (currentScene()->getActionMap().find(event.key.code)
                 == currentScene()->getActionMap().end())
             {
                 continue;
@@ -69,6 +77,11 @@ void GameEngine::changeScene(const std::string& sceneName,
                              std::shared_ptr<Scene> scene,
                              bool endCurrentScene)
 {
+    if (endCurrentScene)
+    {
+        m_sceneMap.erase(m_currentScene);
+    }
+    m_sceneMap[sceneName] = scene;
 }
 
 void GameEngine::run()
@@ -89,7 +102,7 @@ sf::RenderWindow& GameEngine::window()
     return m_window;
 }
 
-const Assets& GameEngine::getAssets() const
+Assets& GameEngine::getAssets()
 {
     return m_assets;
 }

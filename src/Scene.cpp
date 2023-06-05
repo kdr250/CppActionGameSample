@@ -35,7 +35,7 @@ bool Scene::hasEnded() const
 
 const ActionMap& Scene::getActionMap() const
 {
-    // TODO: return ステートメントをここに挿入します
+    return m_actionMap;
 }
 
 void Scene::drawLine(const Vec2& p1, const Vec2& p2) {}

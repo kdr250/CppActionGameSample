@@ -1,8 +1,10 @@
-#include <iostream>
+#include "GameEngine.h"
 
 int main()
 {
-    std::cout << "Hello World" << std::endl;
+    GameEngine game("test");
+
+    game.run();
 
     return 0;
 }

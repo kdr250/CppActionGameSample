@@ -11,7 +11,7 @@ void EntityManager::removeDeadEntities(EntityVector& vec)
     vec.erase(result, vec.end());
 }
 
-EntityManager::EntityManagert() {}
+EntityManager::EntityManager() {}
 
 void EntityManager::update()
 {
@@ -41,7 +41,7 @@ std::shared_ptr<Entity> EntityManager::addEntity(const std::string& tag)
 
 EntityVector& EntityManager::getEntities()
 {
-    returtn m_entities();
+    return m_entities;
 }
 
 EntityVector& EntityManager::getEntities(const std::string& tag)

@@ -13,7 +13,7 @@ class Entity
 {
     friend class EntityManager;
 
-private:
+protected:
     bool m_active     = true;
     std::string m_tag = "default";
     size_t m_id       = 0;

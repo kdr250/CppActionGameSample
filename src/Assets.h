@@ -23,8 +23,8 @@ public:
     void addSound(const std::string& name, const std::string& path);
     void addFont(const std::string& name, const std::string& path);
 
-    sf::Texture& getTexture(const std::string& name) const;
-    Animation& getAnimation(const std::string& name) const;
-    sf::Sound& getSound(const std::string& name) const;
-    sf::Font& getFont(const std::string& name) const;
+    sf::Texture& getTexture(const std::string& name);
+    Animation& getAnimation(const std::string& name);
+    sf::Sound& getSound(const std::string& name);
+    sf::Font& getFont(const std::string& name);
 };

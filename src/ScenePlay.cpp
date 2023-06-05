@@ -1,5 +1,6 @@
 #include "ScenePlay.h"
 #include <cmath>
+#include <iostream>
 #include "GameEngine.h"
 
 void ScenePlay::init(const std::string& levelPath)
@@ -11,10 +12,10 @@ void ScenePlay::init(const std::string& levelPath)
     registerAction(sf::Keyboard::G, "TOGGLE_GRID");
 
     // TODO: Register all other gameplay actions
-    registerAction(sf::Keyboard::W, "JUMP");
+    registerAction(sf::Keyboard::W, "UP");
 
     m_gridText.setCharacterSize(12);
-    m_gridText.setFont(m_game->getAssets().getFont("Roboto-Light.ttf");
+    m_gridText.setFont(m_game->getAssets().getFont("Roboto-Light.ttf"));
 
     loadLevel(levelPath);
 }
@@ -32,10 +33,10 @@ void ScenePlay::loadLevel(const std::string& filename)
 
     auto brick = m_entityManager.addEntity("tile");
     brick->addComponent<CAnimation>(m_game->getAssets().getAnimation("Brick"), true);
-    brick->addComponent<CTransform>(Vec2(96,　480));
+    brick->addComponent<CTransform>(Vec2(96, 480));
     if (brick->getComponent<CAnimation>().animation.getName() == "Brick")
     {
-        std::count << "This could be a good way of identifying if a tile is a brick" << std::endl;
+        std::cout << "This could be a good way of identifying if a tile is a brick" << std::endl;
     }
 
     auto block = m_entityManager.addEntity("tile");
@@ -184,7 +185,7 @@ void ScenePlay::sRender()
                 rectangle.setPosition(transform.position.x, transform.position.y);
                 rectangle.setFillColor(sf::Color(0, 0, 0, 0));
                 rectangle.setOutlineColor(sf::Color(255, 255, 255, 255));
-                rectangle.getOutlineThickness(1);
+                rectangle.setOutlineThickness(1);
                 m_game->window().draw(rectangle);
             }
         }
@@ -208,8 +209,8 @@ void ScenePlay::sRender()
 
             for (float x = nextGridX; x < rightX; x += m_gridSize.x)
             {
-                std::string xCell = stsd::to_string((int)x / (int)m_gridSize.x);
-                std::string yCell = stsd::to_string((int)y / (int)m_gridSize.y);
+                std::string xCell = std::to_string((int)x / (int)m_gridSize.x);
+                std::string yCell = std::to_string((int)y / (int)m_gridSize.y);
                 m_gridText.setString("(" + xCell + ", " + yCell + ")");
                 m_gridText.setPosition(x + 3, height() - y - m_gridSize.y + 2);
                 m_game->window().draw(m_gridText);
@@ -222,33 +223,37 @@ void ScenePlay::sDoAction(const Action& action)
 {
     if (action.type() == "START")
     {
-        switch (action.name())
+        if (action.name() == "TOGGLE_TEXTURE")
         {
-            case "TOGGLE_TEXTURE":
-                m_drawTextures = !m_drawTextures;
-                break;
-            case "TOGGLE_COLLISION":
-                m_drawCollision = !m_drawCollision;
-                break;
-            case "TOGGLE_GRID":
-                m_drawGrid = !m_drawGrid;
-                break;
-            case "PAUSE":
-                setPaused(!m_paused);
-                break;
-            case "QUIT":
-                onEnd();
-                break;
-            // TODO: Implement other actions
-            case "JUMP":
-                // TODO: player's input component
-                break;
-            default:
-                break;
+            m_drawTextures = !m_drawTextures;
+        }
+        else if (action.name() == "TOGGLE_COLLISION")
+        {
+            m_drawCollision = !m_drawCollision;
+        }
+        else if (action.name() == "TOGGLE_GRID")
+        {
+            m_drawGrid = !m_drawGrid;
+        }
+        else if (action.name() == "PAUSE")
+        {
+            setPaused(!m_paused);
+        }
+        else if (action.name() == "QUIT")
+        {
+            onEnd();
+        }
+        else if (action.name() == "UP")
+        {
+            m_player->getComponent<CInput>().up = true;
         }
     }
     else if (action.type() == "END")
     {
+        if (action.name() == "UP")
+        {
+            m_player->getComponent<CInput>().up = false;
+        }
     }
 }
 
@@ -262,5 +267,11 @@ void ScenePlay::onEnd()
 
 Vec2 ScenePlay::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity)
 {
+    // TODO: This function takes in a grid (x,y) position and an Entity
+    //       Return a Vec2 indicating where the CENTER position of the Entity should be
+    //       You must use the Entity's Animation size to position it correctly
+    //       The size of the grid width and height is stored in m_gridSize.x and m_gridSize.y
+    //       The bottom-left corner of the Animation should align with the bottom left of the grid cell
+
     return Vec2();
 }
