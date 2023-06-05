@@ -12,7 +12,7 @@ protected:
     std::vector<std::string> m_menuStrings;
     sf::Text m_menuText;
     std::vector<std::string> m_levelPath;
-    int menuIndex;
+    int menuIndex = 0;
 
     void init();
 

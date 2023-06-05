@@ -13,15 +13,14 @@ class Entity
 {
     friend class EntityManager;
 
-protected:
     bool m_active     = true;
     std::string m_tag = "default";
     size_t m_id       = 0;
     ComponentTuple m_components;
 
+public:
     Entity(const size_t& id, const std::string& tag);
 
-public:
     void destroy();
     size_t id() const;
     bool isActive() const;

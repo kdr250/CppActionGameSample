@@ -9,7 +9,10 @@ void SceneMenu::init()
     m_menuText.setPosition(100, 100);
 }
 
-SceneMenu::SceneMenu(GameEngine* gameEngine) : Scene(gameEngine) {}
+SceneMenu::SceneMenu(GameEngine* gameEngine) : Scene(gameEngine)
+{
+    init();
+}
 
 void SceneMenu::update() {}
 

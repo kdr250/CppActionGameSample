@@ -5,7 +5,7 @@ void Scene::setPaused(bool paused) {}
 
 Scene::Scene() {}
 
-Scene::Scene(GameEngine* gameEngine) {}
+Scene::Scene(GameEngine* gameEngine) : m_game(gameEngine) {}
 
 void Scene::doAction(const Action& action) {}
 
