@@ -21,18 +21,18 @@ void Assets::addAnimation(const std::string& name, Animation& animation)
     m_animations.emplace(name, animation);
 }
 
-void Assets::addSound(const std::string& name, const std::string& path)
-{
-    sf::SoundBuffer soundBuffer;
-    if (!soundBuffer.loadFromFile(path))
-    {
-        std::cout << "Sound file not found : " << path << std::endl;
-        return;
-    }
-    sf::Sound sound;
-    sound.setBuffer(soundBuffer);
-    m_sounds.emplace(name, sound);
-}
+//void Assets::addSound(const std::string& name, const std::string& path)
+//{
+//    sf::SoundBuffer soundBuffer;
+//    if (!soundBuffer.loadFromFile(path))
+//    {
+//        std::cout << "Sound file not found : " << path << std::endl;
+//        return;
+//    }
+//    sf::Sound sound;
+//    sound.setBuffer(soundBuffer);
+//    m_sounds.emplace(name, sound);
+//}
 
 void Assets::addFont(const std::string& name, const std::string& path)
 {
@@ -55,10 +55,10 @@ Animation& Assets::getAnimation(const std::string& name)
     return m_animations[name];
 }
 
-sf::Sound& Assets::getSound(const std::string& name)
-{
-    return m_sounds[name];
-}
+//sf::Sound& Assets::getSound(const std::string& name)
+//{
+//    return m_sounds[name];
+//}
 
 sf::Font& Assets::getFont(const std::string& name)
 {

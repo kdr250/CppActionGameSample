@@ -23,4 +23,8 @@ public:
 
     void sRender();
     void sDoAction(Action& action);
+
+    // Scene を介して継承されました
+    virtual void onEnd() override;
+    virtual void sDoAction(const Action& action) override;
 };

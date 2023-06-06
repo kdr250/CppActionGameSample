@@ -29,7 +29,7 @@ public:
     template<typename T>
     bool hasComponent() const
     {
-        return getComponent<T>.has();
+        return getComponent<T>().has;
     }
 
     template<typename T, typename... TArgs>

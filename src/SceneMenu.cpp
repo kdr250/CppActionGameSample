@@ -22,3 +22,7 @@ void SceneMenu::sRender()
 }
 
 void SceneMenu::sDoAction(Action& action) {}
+
+void SceneMenu::onEnd() {}
+
+void SceneMenu::sDoAction(const Action& action) {}

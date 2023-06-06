@@ -62,7 +62,7 @@ public:
     bool repeat = false;
 
     CAnimation() {}
-    CAnimation(const Animation& animation, bool r) : animation(animation), repeat(r) {};
+    CAnimation(const Animation& animation, bool r = false) : animation(animation), repeat(r) {};
 };
 
 class CGravity : public Component

@@ -77,6 +77,7 @@ void GameEngine::changeScene(const std::string& sceneName,
                              std::shared_ptr<Scene> scene,
                              bool endCurrentScene)
 {
+    m_currentScene = sceneName;
     if (endCurrentScene)
     {
         m_sceneMap.erase(m_currentScene);
