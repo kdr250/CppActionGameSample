@@ -14,6 +14,9 @@ protected:
     std::vector<std::string> m_levelPath;
     int menuIndex = 0;
 
+    // TODO: load from Assets
+    sf::Font m_font;
+
     void init();
 
 public:

@@ -3,6 +3,8 @@
 
 void SceneMenu::init()
 {
+    m_font.loadFromFile("resources/fonts/Roboto-Light.ttf");
+    m_menuText.setFont(m_font);
     m_menuText.setCharacterSize(64);
     m_menuText.setFillColor(sf::Color::Blue);
     m_menuText.setString("Hello World!");
