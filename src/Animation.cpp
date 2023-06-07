@@ -20,10 +20,9 @@ Animation::Animation(const std::string& name, const sf::Texture& t, int frameCou
 void Animation::update()
 {
     m_currentFrame++;
-
-    // TODO:
-    //   1 - calculate the correct frame of animation to play based on currentFrame and speed
-    //   2 - se the texture rectangle properly
+    int animationFrame = (m_currentFrame / m_speed) % m_frameCount;
+    sf::IntRect rectangle(animationFrame * m_size.x, 0, m_size.x, m_size.y);
+    m_sprite.setTextureRect(rectangle);
 }
 
 std::string& Animation::getName()
