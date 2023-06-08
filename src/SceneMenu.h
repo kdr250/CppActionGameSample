@@ -16,6 +16,7 @@ protected:
 
     // TODO: load from Assets
     sf::Font m_font;
+    bool m_start = false;
 
     void init();
 
@@ -25,7 +26,6 @@ public:
     void update();
 
     void sRender();
-    void sDoAction(Action& action);
 
     // Scene を介して継承されました
     virtual void onEnd() override;

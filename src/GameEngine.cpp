@@ -57,7 +57,7 @@ void GameEngine::sUserInput()
 
             const std::string actionType = (event.type == sf::Event::KeyPressed) ? "START" : "END";
 
-            currentScene()->doAction(
+            currentScene()->sDoAction(
                 Action(currentScene()->getActionMap().at(event.key.code), actionType));
         }
     }

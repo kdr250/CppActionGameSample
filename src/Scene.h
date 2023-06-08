@@ -30,7 +30,6 @@ public:
     virtual void sDoAction(const Action& action) = 0;
     virtual void sRender()                       = 0;
 
-    virtual void doAction(const Action& action);
     void simulate(const size_t frames);
     void registerAction(int inputKey, const std::string& actionName);
 

@@ -37,7 +37,6 @@ public:
     void sEnemySpawner();
     void sCollision();
     void sRender();
-    void sDoAction(Action& action);
     void sDebug();
 
     virtual void onEnd() override;

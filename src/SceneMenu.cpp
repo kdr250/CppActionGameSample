@@ -1,5 +1,7 @@
 #include "SceneMenu.h"
+#include <iostream>
 #include "GameEngine.h"
+#include "ScenePlay.h"
 
 void SceneMenu::init()
 {
@@ -7,8 +9,10 @@ void SceneMenu::init()
     m_menuText.setFont(m_font);
     m_menuText.setCharacterSize(64);
     m_menuText.setFillColor(sf::Color::Blue);
-    m_menuText.setString("Hello World!");
+    m_menuText.setString("Press Enter to Start!");
     m_menuText.setPosition(100, 100);
+
+    registerAction(sf::Keyboard::Enter, "PLAY");
 }
 
 SceneMenu::SceneMenu(GameEngine* gameEngine) : Scene(gameEngine)
@@ -16,15 +20,28 @@ SceneMenu::SceneMenu(GameEngine* gameEngine) : Scene(gameEngine)
     init();
 }
 
-void SceneMenu::update() {}
+void SceneMenu::update()
+{
+    if (m_start)
+    {
+        m_game->changeScene("PLAY", std::make_shared<ScenePlay>(m_game, "test"));
+    }
+}
 
 void SceneMenu::sRender()
 {
     m_game->window().draw(m_menuText);
 }
 
-void SceneMenu::sDoAction(Action& action) {}
-
 void SceneMenu::onEnd() {}
 
-void SceneMenu::sDoAction(const Action& action) {}
+void SceneMenu::sDoAction(const Action& action)
+{
+    if (action.type() == "START")
+    {
+        if (action.name() == "PLAY")
+        {
+            m_start = true;
+        }
+    }
+}
