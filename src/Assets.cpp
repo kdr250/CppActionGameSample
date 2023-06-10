@@ -5,10 +5,17 @@ Assets::Assets() {}
 
 void Assets::loadFromFile(const std::string path)
 {
-    addTexture("Stand", path);
-
-    Animation animation("Stand", m_textures["Stand"], 2, 30);
+    addTexture("Run", "resources/texture/player_run.png");
+    Animation animation("Run", m_textures["Run"], 8, 15);
     addAnimation(animation.getName(), animation);
+
+    addTexture("Air", "resources/texture/player_jump.png");
+    Animation animation2("Air", m_textures["Air"], 2, 30);
+    addAnimation(animation2.getName(), animation2);
+
+    addTexture("Idle", "resources/texture/player_idle.png");
+    Animation animation3("Idle", m_textures["Idle"], 2, 30);
+    addAnimation(animation3.getName(), animation3);
 }
 
 void Assets::addTexture(const std::string& name, const std::string& path)

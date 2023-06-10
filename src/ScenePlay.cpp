@@ -71,7 +71,7 @@ void ScenePlay::update()
 void ScenePlay::spawnPlayer()
 {
     m_player = m_entityManager.addEntity("player");
-    m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Stand"), true);
+    m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Idle"), true);
     m_player->addComponent<CTransform>(Vec2(224, 352));
     m_player->getComponent<CTransform>().scale = Vec2(5, 5);
     m_player->addComponent<CBoundingBox>(Vec2(48, 48));
@@ -80,13 +80,15 @@ void ScenePlay::spawnPlayer()
 
 void ScenePlay::sAnimation()
 {
-    if (m_player->getComponent<CState>().state == "air")
+    if (m_player->getComponent<CState>().state == "air"
+        && m_player->getComponent<CAnimation>().animation.getName() != "Air")
     {
         m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Air"));
     }
-    if (m_player->getComponent<CState>().state == "run")
+    if (m_player->getComponent<CState>().state == "run"
+        && m_player->getComponent<CAnimation>().animation.getName() != "Run")
     {
-        //m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Run"));
+        m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Run"));
     }
 
     // TODO: for each entity with an animation, call entity->getComponent<CAnimation>().animation.update()
@@ -101,7 +103,7 @@ void ScenePlay::sMovement()
 
     if (m_player->getComponent<CInput>().up)
     {
-        m_player->getComponent<CState>().state = "run";
+        m_player->getComponent<CState>().state = "air";
         playerVelocity.y                       = -3;
     }
 
