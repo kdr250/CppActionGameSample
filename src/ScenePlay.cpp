@@ -73,6 +73,7 @@ void ScenePlay::spawnPlayer()
     m_player = m_entityManager.addEntity("player");
     m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Stand"), true);
     m_player->addComponent<CTransform>(Vec2(224, 352));
+    m_player->getComponent<CTransform>().scale = Vec2(5, 5);
     m_player->addComponent<CBoundingBox>(Vec2(48, 48));
     m_player->addComponent<CGravity>(0.1);
 }
@@ -85,11 +86,13 @@ void ScenePlay::sAnimation()
     }
     if (m_player->getComponent<CState>().state == "run")
     {
-        m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Run"));
+        //m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Run"));
     }
 
     // TODO: for each entity with an animation, call entity->getComponent<CAnimation>().animation.update()
     //       if the animation is not repeated, and it has ended, destroy the entity
+
+    m_player->getComponent<CAnimation>().animation.update();
 }
 
 void ScenePlay::sMovement()
@@ -161,9 +164,7 @@ void ScenePlay::sRender()
 
             if (entity->hasComponent<CAnimation>())
             {
-                std::cout << "Has Animation Component! : " << entity->tag() << std::endl;
                 auto& animation = entity->getComponent<CAnimation>().animation;
-                std::cout << "Animation = " << animation.getName() << std::endl;
                 animation.getSprite().setRotation(transform.angle);
                 animation.getSprite().setPosition(transform.position.x, transform.position.y);
                 animation.getSprite().setScale(transform.scale.x, transform.scale.y);

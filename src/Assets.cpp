@@ -5,19 +5,10 @@ Assets::Assets() {}
 
 void Assets::loadFromFile(const std::string path)
 {
-    sf::Texture texture;
-    if (!texture.loadFromFile(path))
-    {
-        std::cout << "Failed to load file: " << path << std::endl;
-    }
-    else
-    {
-        std::cout << "Success to load file: " << path << std::endl;
-    }
-    m_textures.emplace("Player", texture);  // TODO: Load from config file
+    addTexture("Stand", path);
 
-    Animation animation("Stand", texture, 2, 5);
-    m_animations.emplace("Stand", animation);
+    Animation animation("Stand", m_textures["Stand"], 2, 30);
+    addAnimation(animation.getName(), animation);
 }
 
 void Assets::addTexture(const std::string& name, const std::string& path)
