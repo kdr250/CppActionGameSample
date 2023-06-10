@@ -14,6 +14,8 @@ void ScenePlay::init(const std::string& levelPath)
 
     // TODO: Register all other gameplay actions
     registerAction(sf::Keyboard::W, "UP");
+    registerAction(sf::Keyboard::A, "LEFT");
+    registerAction(sf::Keyboard::D, "RIGHT");
 
     m_gridText.setCharacterSize(12);
     m_gridText.setFont(m_game->getAssets().getFont("Roboto-Light.ttf"));
@@ -116,6 +118,22 @@ void ScenePlay::sMovement()
         m_player->getComponent<CState>().state = "air";
         playerVelocity.y                       = -3;
     }
+    if (m_player->getComponent<CInput>().left)
+    {
+        if (m_player->getComponent<CState>().state != "air")
+        {
+            m_player->getComponent<CState>().state = "run";
+        }
+        playerVelocity.x = -3;
+    }
+    else if (m_player->getComponent<CInput>().right)
+    {
+        if (m_player->getComponent<CState>().state != "air")
+        {
+            m_player->getComponent<CState>().state = "run";
+        }
+        playerVelocity.x = 3;
+    }
 
     m_player->getComponent<CTransform>().velocity = playerVelocity;
 
@@ -129,6 +147,14 @@ void ScenePlay::sMovement()
         entity->getComponent<CTransform>().previoutPosition =
             entity->getComponent<CTransform>().position;
         entity->getComponent<CTransform>().position += entity->getComponent<CTransform>().velocity;
+
+        if ((entity->getComponent<CTransform>().velocity.x < 0
+             && entity->getComponent<CTransform>().scale.x > 0)
+            || (entity->getComponent<CTransform>().velocity.x > 0
+                && entity->getComponent<CTransform>().scale.x < 0))
+        {
+            entity->getComponent<CTransform>().scale.x *= -1;
+        }
     }
 
     // TODO: Implement the maximum player speed in both X and Y directions
@@ -155,6 +181,7 @@ void ScenePlay::sCollision()
                        < entity->getComponent<CTransform>().previoutPosition.y)
             {
                 m_player->getComponent<CTransform>().position.y -= overlap.y;
+                m_player->getComponent<CState>().state = "run";
             }
             else if (previousOverlap.x > 0
                      && m_player->getComponent<CTransform>().previoutPosition.y
@@ -291,12 +318,28 @@ void ScenePlay::sDoAction(const Action& action)
         {
             m_player->getComponent<CInput>().up = true;
         }
+        else if (action.name() == "LEFT")
+        {
+            m_player->getComponent<CInput>().left = true;
+        }
+        else if (action.name() == "RIGHT")
+        {
+            m_player->getComponent<CInput>().right = true;
+        }
     }
     else if (action.type() == "END")
     {
         if (action.name() == "UP")
         {
             m_player->getComponent<CInput>().up = false;
+        }
+        else if (action.name() == "LEFT")
+        {
+            m_player->getComponent<CInput>().left = false;
+        }
+        else if (action.name() == "RIGHT")
+        {
+            m_player->getComponent<CInput>().right = false;
         }
     }
 }
