@@ -126,9 +126,8 @@ void ScenePlay::sMovement()
             entity->getComponent<CTransform>().velocity.y +=
                 entity->getComponent<CGravity>().gravity;
         }
-        entity->getComponent<CTransform>().previoutPosition = {
-            entity->getComponent<CTransform>().position.x,
-            entity->getComponent<CTransform>().position.y};
+        entity->getComponent<CTransform>().previoutPosition =
+            entity->getComponent<CTransform>().position;
         entity->getComponent<CTransform>().position += entity->getComponent<CTransform>().velocity;
     }
 
