@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include "GameEngine.h"
+#include "Physics.h"
 
 void ScenePlay::init(const std::string& levelPath)
 {
@@ -135,11 +136,14 @@ void ScenePlay::sEnemySpawner() {}
 
 void ScenePlay::sCollision()
 {
-    // TODO: SFML's (0,0) position is on the TOP-LEFT corner
-    //       This means jumping will have a negative y-component
-    //       and gravity will have a positive y-component
-    //       Also, something BELOW something else will have a y value GREATER than it
-    //       Also, something ABOVE something else will have a y value LESS than it
+    for (auto entity : m_entityManager.getEntities("tile"))
+    {
+        Vec2& overlap = Physics::getOverlap(m_player, entity);
+        if (overlap.x > 0 && overlap.y > 0)
+        {
+            // TODO: calculate previous overlap
+        }
+    }
 }
 
 void ScenePlay::sRender()
