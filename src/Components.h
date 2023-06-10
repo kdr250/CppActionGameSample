@@ -20,7 +20,7 @@ public:
     double angle          = 0;
 
     CTransform() {}
-    CTransform(const Vec2& p) : position(p) {}
+    CTransform(const Vec2& p) : position(p), previoutPosition(p) {}
 };
 
 class CLifespan : public Component

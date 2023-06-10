@@ -38,6 +38,12 @@ void ScenePlay::loadLevel(const std::string& filename)
     brick->getComponent<CTransform>().scale = Vec2(5, 5);
     brick->addComponent<CBoundingBox>(Vec2(80, 80));
 
+    auto brick2 = m_entityManager.addEntity("tile");
+    brick2->addComponent<CAnimation>(m_game->getAssets().getAnimation("Brick"), true);
+    brick2->addComponent<CTransform>(Vec2(304, 520));
+    brick2->getComponent<CTransform>().scale = Vec2(5, 5);
+    brick2->addComponent<CBoundingBox>(Vec2(80, 80));
+
     /*auto block = m_entityManager.addEntity("tile");
     block->addComponent<CAnimation>(m_game->getAssets().getAnimation("Block"), true);
     block->addComponent<CTransform>(Vec2(224, 480));
@@ -120,6 +126,9 @@ void ScenePlay::sMovement()
             entity->getComponent<CTransform>().velocity.y +=
                 entity->getComponent<CGravity>().gravity;
         }
+        entity->getComponent<CTransform>().previoutPosition = {
+            entity->getComponent<CTransform>().position.x,
+            entity->getComponent<CTransform>().position.y};
         entity->getComponent<CTransform>().position += entity->getComponent<CTransform>().velocity;
     }
 
@@ -138,10 +147,34 @@ void ScenePlay::sCollision()
 {
     for (auto entity : m_entityManager.getEntities("tile"))
     {
-        Vec2& overlap = Physics::getOverlap(m_player, entity);
+        Vec2 overlap = Physics::getOverlap(m_player, entity);
         if (overlap.x > 0 && overlap.y > 0)
         {
-            // TODO: calculate previous overlap
+            Vec2 previousOverlap = Physics::getPreviousOverlap(m_player, entity);
+            if (previousOverlap.x > 0
+                && m_player->getComponent<CTransform>().previoutPosition.y
+                       < entity->getComponent<CTransform>().previoutPosition.y)
+            {
+                m_player->getComponent<CTransform>().position.y -= overlap.y;
+            }
+            else if (previousOverlap.x > 0
+                     && m_player->getComponent<CTransform>().previoutPosition.y
+                            > entity->getComponent<CTransform>().previoutPosition.y)
+            {
+                m_player->getComponent<CTransform>().position.y += overlap.y;
+            }
+            if (previousOverlap.y > 0
+                && m_player->getComponent<CTransform>().previoutPosition.x
+                       < entity->getComponent<CTransform>().previoutPosition.x)
+            {
+                m_player->getComponent<CTransform>().position.x -= overlap.x;
+            }
+            else if (previousOverlap.y > 0
+                     && m_player->getComponent<CTransform>().previoutPosition.x
+                            < entity->getComponent<CTransform>().previoutPosition.x)
+            {
+                m_player->getComponent<CTransform>().position.x += overlap.x;
+            }
         }
     }
 }

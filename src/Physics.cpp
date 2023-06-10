@@ -4,7 +4,7 @@
 /**
    return the overlap rectangle size of the bouding box of entity a and b
 */
-Vec2& Physics::getOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b)
+Vec2 Physics::getOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b)
 {
     auto& transformA   = a->getComponent<CTransform>();
     auto& boundingBoxA = a->getComponent<CBoundingBox>();
@@ -24,7 +24,18 @@ Vec2& Physics::getOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b)
    return the previous overlap rectangle size of the bouding boxes of entity a and b
    previous overlap uses the entity's previous position
 */
-Vec2& Physics::getPreviousOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b)
+Vec2 Physics::getPreviousOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b)
 {
-    return Vec2();
+    auto& transformA   = a->getComponent<CTransform>();
+    auto& boundingBoxA = a->getComponent<CBoundingBox>();
+    auto& transformB   = b->getComponent<CTransform>();
+    auto& boundingBoxB = b->getComponent<CBoundingBox>();
+
+    float distanceX = std::abs(transformA.previoutPosition.x - transformB.previoutPosition.x);
+    float distanceY = std::abs(transformA.previoutPosition.y - transformB.previoutPosition.y);
+
+    float ox = boundingBoxA.halfSize.x + boundingBoxB.halfSize.x - distanceX;
+    float oy = boundingBoxA.halfSize.y + boundingBoxB.halfSize.y - distanceY;
+
+    return Vec2(ox, oy);
 }
