@@ -16,6 +16,10 @@ void Assets::loadFromFile(const std::string path)
     addTexture("Idle", "resources/texture/player_idle.png");
     Animation animation3("Idle", m_textures["Idle"], 2, 30);
     addAnimation(animation3.getName(), animation3);
+
+    addTexture("Brick", "resources/texture/tile_brick.png");
+    Animation animation4("Brick", m_textures["Brick"], 1, 0);
+    addAnimation(animation4.getName(), animation4);
 }
 
 void Assets::addTexture(const std::string& name, const std::string& path)

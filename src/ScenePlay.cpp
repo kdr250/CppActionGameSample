@@ -31,15 +31,13 @@ void ScenePlay::loadLevel(const std::string& filename)
     // NOTE: all of the code below is sample code, it should be removed
     spawnPlayer();
 
-    /*auto brick = m_entityManager.addEntity("tile");
+    auto brick = m_entityManager.addEntity("tile");
     brick->addComponent<CAnimation>(m_game->getAssets().getAnimation("Brick"), true);
-    brick->addComponent<CTransform>(Vec2(96, 480));
-    if (brick->getComponent<CAnimation>().animation.getName() == "Brick")
-    {
-        std::cout << "This could be a good way of identifying if a tile is a brick" << std::endl;
-    }
+    brick->addComponent<CTransform>(Vec2(224, 600));
+    brick->getComponent<CTransform>().scale = Vec2(5, 5);
+    brick->addComponent<CBoundingBox>(Vec2(80, 80));
 
-    auto block = m_entityManager.addEntity("tile");
+    /*auto block = m_entityManager.addEntity("tile");
     block->addComponent<CAnimation>(m_game->getAssets().getAnimation("Block"), true);
     block->addComponent<CTransform>(Vec2(224, 480));
     block->addComponent<CBoundingBox>(m_game->getAssets().getAnimation("Block").getSize());
@@ -74,7 +72,7 @@ void ScenePlay::spawnPlayer()
     m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Idle"), true);
     m_player->addComponent<CTransform>(Vec2(224, 352));
     m_player->getComponent<CTransform>().scale = Vec2(5, 5);
-    m_player->addComponent<CBoundingBox>(Vec2(48, 48));
+    m_player->addComponent<CBoundingBox>(Vec2(80, 80));
     m_player->addComponent<CGravity>(0.1);
 }
 
@@ -89,6 +87,11 @@ void ScenePlay::sAnimation()
         && m_player->getComponent<CAnimation>().animation.getName() != "Run")
     {
         m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Run"));
+    }
+    if (m_player->getComponent<CState>().state == "idle"
+        && m_player->getComponent<CAnimation>().animation.getName() != "Idle")
+    {
+        m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Idle"));
     }
 
     // TODO: for each entity with an animation, call entity->getComponent<CAnimation>().animation.update()
