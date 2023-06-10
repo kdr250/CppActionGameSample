@@ -31,7 +31,7 @@ void ScenePlay::loadLevel(const std::string& filename)
     // NOTE: all of the code below is sample code, it should be removed
     spawnPlayer();
 
-    auto brick = m_entityManager.addEntity("tile");
+    /*auto brick = m_entityManager.addEntity("tile");
     brick->addComponent<CAnimation>(m_game->getAssets().getAnimation("Brick"), true);
     brick->addComponent<CTransform>(Vec2(96, 480));
     if (brick->getComponent<CAnimation>().animation.getName() == "Brick")
@@ -46,7 +46,7 @@ void ScenePlay::loadLevel(const std::string& filename)
 
     auto question = m_entityManager.addEntity("tile");
     question->addComponent<CAnimation>(m_game->getAssets().getAnimation("Question"), true);
-    question->addComponent<CTransform>(Vec2(352, 480));
+    question->addComponent<CTransform>(Vec2(352, 480));*/
 }
 
 ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath) :
@@ -161,7 +161,9 @@ void ScenePlay::sRender()
 
             if (entity->hasComponent<CAnimation>())
             {
+                std::cout << "Has Animation Component! : " << entity->tag() << std::endl;
                 auto& animation = entity->getComponent<CAnimation>().animation;
+                std::cout << "Animation = " << animation.getName() << std::endl;
                 animation.getSprite().setRotation(transform.angle);
                 animation.getSprite().setPosition(transform.position.x, transform.position.y);
                 animation.getSprite().setScale(transform.scale.x, transform.scale.y);

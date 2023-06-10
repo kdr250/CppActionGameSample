@@ -2,7 +2,7 @@
 
 int main()
 {
-    GameEngine game("test");
+    GameEngine game("resources/texture/player_anims.png");
 
     game.run();
 

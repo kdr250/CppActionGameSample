@@ -5,7 +5,7 @@
 void GameEngine::init(const std::string& path)
 {
     // TODO: comment out for test
-    //m_assets.loadFromFile(path);
+    m_assets.loadFromFile(path);
 
     m_window.create(sf::VideoMode(1280, 768), "Action Game");
     m_window.setFramerateLimit(60);
