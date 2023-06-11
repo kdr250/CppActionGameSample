@@ -36,15 +36,15 @@ void ScenePlay::loadLevel(const std::string& filename)
 
     auto brick = m_entityManager.addEntity("tile");
     brick->addComponent<CAnimation>(m_game->getAssets().getAnimation("Brick"), true);
-    brick->addComponent<CTransform>(Vec2(224, 600));
-    brick->getComponent<CTransform>().scale = Vec2(5, 5);
-    brick->addComponent<CBoundingBox>(Vec2(80, 80));
+    brick->addComponent<CTransform>(Vec2(224, 600),
+                                    brick->getComponent<CAnimation>().animation.getScale());
+    brick->addComponent<CBoundingBox>(brick->getComponent<CAnimation>().animation.getSize());
 
     auto brick2 = m_entityManager.addEntity("tile");
     brick2->addComponent<CAnimation>(m_game->getAssets().getAnimation("Brick"), true);
-    brick2->addComponent<CTransform>(Vec2(304, 520));
-    brick2->getComponent<CTransform>().scale = Vec2(5, 5);
-    brick2->addComponent<CBoundingBox>(Vec2(80, 80));
+    brick2->addComponent<CTransform>(Vec2(304, 520),
+                                     brick2->getComponent<CAnimation>().animation.getScale());
+    brick2->addComponent<CBoundingBox>(brick2->getComponent<CAnimation>().animation.getSize());
 
     /*auto block = m_entityManager.addEntity("tile");
     block->addComponent<CAnimation>(m_game->getAssets().getAnimation("Block"), true);
@@ -79,9 +79,9 @@ void ScenePlay::spawnPlayer()
 {
     m_player = m_entityManager.addEntity("player");
     m_player->addComponent<CAnimation>(m_game->getAssets().getAnimation("Idle"), true);
-    m_player->addComponent<CTransform>(Vec2(224, 352));
-    m_player->getComponent<CTransform>().scale = Vec2(5, 5);
-    m_player->addComponent<CBoundingBox>(Vec2(80, 80));
+    m_player->addComponent<CTransform>(Vec2(224, 352),
+                                       m_player->getComponent<CAnimation>().animation.getScale());
+    m_player->addComponent<CBoundingBox>(m_player->getComponent<CAnimation>().animation.getSize());
     m_player->addComponent<CGravity>(0.1);
 }
 

@@ -43,8 +43,9 @@ void Assets::loadFromFile(const std::string path)
             std::string textureName;
             int frameCount;
             int speed;
-            assetStream >> name >> textureName >> frameCount >> speed;
-            Animation animation(name, m_textures[textureName], frameCount, speed);
+            float scale;
+            assetStream >> name >> textureName >> frameCount >> speed >> scale;
+            Animation animation(name, m_textures[textureName], frameCount, speed, scale);
             addAnimation(name, animation);
         }
     }
