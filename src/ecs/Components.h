@@ -1,8 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Animation.h"
-#include "Vec2.h"
+#include "../Animation.h"
+#include "../Vec2.h"
 
 class Component
 {
@@ -20,7 +20,7 @@ public:
     double angle          = 0;
 
     CTransform() {}
-    CTransform(const Vec2& p) : position(p) {}
+    CTransform(const Vec2& p, const Vec2& s) : position(p), previoutPosition(p), scale(s) {}
 };
 
 class CLifespan : public Component
@@ -62,7 +62,7 @@ public:
     bool repeat = false;
 
     CAnimation() {}
-    CAnimation(const Animation& animation, bool r = false) : animation(animation), repeat(r) {};
+    CAnimation(const Animation& a, bool r = false) : animation(a), repeat(r) {};
 };
 
 class CGravity : public Component
@@ -77,7 +77,7 @@ public:
 class CState : public Component
 {
 public:
-    std::string state = "jumping";
+    std::string state = "idle";
 
     CState() {}
     CState(const std::string& s) : state(s) {}

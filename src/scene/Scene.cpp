@@ -1,5 +1,5 @@
 #include "Scene.h"
-#include "GameEngine.h"
+#include "../GameEngine.h"
 
 void Scene::setPaused(bool paused) {}
 
@@ -7,11 +7,12 @@ Scene::Scene() {}
 
 Scene::Scene(GameEngine* gameEngine) : m_game(gameEngine) {}
 
-void Scene::doAction(const Action& action) {}
-
 void Scene::simulate(const size_t frames) {}
 
-void Scene::registerAction(int inputKey, const std::string& actionName) {}
+void Scene::registerAction(int inputKey, const std::string& actionName)
+{
+    m_actionMap[inputKey] = actionName;
+}
 
 size_t Scene::width() const
 {

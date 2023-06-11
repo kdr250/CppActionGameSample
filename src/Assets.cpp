@@ -1,9 +1,55 @@
 #include "Assets.h"
+#include <fstream>
 #include <iostream>
+#include <sstream>
 
 Assets::Assets() {}
 
-void Assets::loadFromFile(const std::string path) {}
+void Assets::loadFromFile(const std::string path)
+{
+    std::ifstream file;
+    file.open(path);
+    if (!file.is_open())
+    {
+        std::cout << "Failed to load config file" << std::endl;
+        return;
+    }
+
+    std::string line;
+    std::vector<std::string> allLine;
+
+    while (std::getline(file, line))
+    {
+        allLine.push_back(line);
+    }
+
+    file.close();
+
+    for (auto& line : allLine)
+    {
+        std::stringstream assetStream(line);
+        std::string type;
+        assetStream >> type;
+        if (type == "Texture")
+        {
+            std::string name;
+            std::string path;
+            assetStream >> name >> path;
+            addTexture(name, path);
+        }
+        else if (type == "Animation")
+        {
+            std::string name;
+            std::string textureName;
+            int frameCount;
+            int speed;
+            float scale;
+            assetStream >> name >> textureName >> frameCount >> speed >> scale;
+            Animation animation(name, m_textures[textureName], frameCount, speed, scale);
+            addAnimation(name, animation);
+        }
+    }
+}
 
 void Assets::addTexture(const std::string& name, const std::string& path)
 {
