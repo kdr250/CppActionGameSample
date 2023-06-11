@@ -74,10 +74,6 @@ void ScenePlay::loadLevel(const std::string& filename)
         }
     }
 
-    // TODO: read in the level file and add the appropriate entities
-    //       use the PlayerConfig struct m_playerConfig to store player properties
-
-    // NOTE: all of the code below is sample code, it should be removed
     spawnPlayer();
 }
 
@@ -378,11 +374,6 @@ void ScenePlay::onEnd()
 
 Vec2 ScenePlay::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity)
 {
-    // TODO: This function takes in a grid (x,y) position and an Entity
-    //       Return a Vec2 indicating where the CENTER position of the Entity should be
-    //       You must use the Entity's Animation size to position it correctly
-    //       The size of the grid width and height is stored in m_gridSize.x and m_gridSize.y
-    //       The bottom-left corner of the Animation should align with the bottom left of the grid cell
     float maxWidth  = (float)m_game->window().getSize().x;
     float maxHeight = (float)m_game->window().getSize().y;
 
