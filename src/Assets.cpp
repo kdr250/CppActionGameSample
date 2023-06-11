@@ -8,7 +8,7 @@ Assets::Assets() {}
 void Assets::loadFromFile(const std::string path)
 {
     std::ifstream file;
-    file.open("resources/config/assets.txt");
+    file.open(path);
     if (!file.is_open())
     {
         std::cout << "Failed to load config file" << std::endl;

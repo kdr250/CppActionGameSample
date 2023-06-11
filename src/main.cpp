@@ -2,7 +2,7 @@
 
 int main()
 {
-    GameEngine game("test");
+    GameEngine game("resources/config/assets.txt");
 
     game.run();
 
