@@ -156,9 +156,6 @@ void ScenePlay::sMovement()
             entity->getComponent<CTransform>().scale.x *= -1;
         }
     }
-
-    // TODO: Implement the maximum player speed in both X and Y directions
-    // NOTE: Setting an entity's scale.x to -1/1 will make it face to the left/right
 }
 
 void ScenePlay::sLifeSpan()
