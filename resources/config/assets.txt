@@ -1,0 +1,8 @@
+Texture TexIdle resources/texture/player_idle.png
+Texture TexRun resources/texture/player_run.png
+Texture TexJump resources/texture/player_jump.png
+Texture TexBrick resources/texture/tile_brick.png
+Animation Idle TexIdle 2 30
+Animation Run TexRun 8 15
+Animation Air TexJump 2 30
+Animation Brick TexBrick 1 0

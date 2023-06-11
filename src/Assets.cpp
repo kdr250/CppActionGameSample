@@ -1,25 +1,53 @@
 #include "Assets.h"
+#include <fstream>
 #include <iostream>
+#include <sstream>
 
 Assets::Assets() {}
 
 void Assets::loadFromFile(const std::string path)
 {
-    addTexture("Run", "resources/texture/player_run.png");
-    Animation animation("Run", m_textures["Run"], 8, 15);
-    addAnimation(animation.getName(), animation);
+    std::ifstream file;
+    file.open("resources/config/assets.txt");
+    if (!file.is_open())
+    {
+        std::cout << "Failed to load config file" << std::endl;
+        return;
+    }
 
-    addTexture("Air", "resources/texture/player_jump.png");
-    Animation animation2("Air", m_textures["Air"], 2, 30);
-    addAnimation(animation2.getName(), animation2);
+    std::string line;
+    std::vector<std::string> allLine;
 
-    addTexture("Idle", "resources/texture/player_idle.png");
-    Animation animation3("Idle", m_textures["Idle"], 2, 30);
-    addAnimation(animation3.getName(), animation3);
+    while (std::getline(file, line))
+    {
+        allLine.push_back(line);
+    }
 
-    addTexture("Brick", "resources/texture/tile_brick.png");
-    Animation animation4("Brick", m_textures["Brick"], 1, 0);
-    addAnimation(animation4.getName(), animation4);
+    file.close();
+
+    for (auto& line : allLine)
+    {
+        std::stringstream assetStream(line);
+        std::string type;
+        assetStream >> type;
+        if (type == "Texture")
+        {
+            std::string name;
+            std::string path;
+            assetStream >> name >> path;
+            addTexture(name, path);
+        }
+        else if (type == "Animation")
+        {
+            std::string name;
+            std::string textureName;
+            int frameCount;
+            int speed;
+            assetStream >> name >> textureName >> frameCount >> speed;
+            Animation animation(name, m_textures[textureName], frameCount, speed);
+            addAnimation(name, animation);
+        }
+    }
 }
 
 void Assets::addTexture(const std::string& name, const std::string& path)
