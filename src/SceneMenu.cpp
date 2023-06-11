@@ -24,7 +24,8 @@ void SceneMenu::update()
 {
     if (m_start)
     {
-        m_game->changeScene("PLAY", std::make_shared<ScenePlay>(m_game, "test"));
+        m_game->changeScene("PLAY",
+                            std::make_shared<ScenePlay>(m_game, "resources/level/level1.txt"));
     }
 }
 

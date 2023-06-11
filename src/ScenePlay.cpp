@@ -1,6 +1,9 @@
 #include "ScenePlay.h"
 #include <cmath>
+#include <fstream>
 #include <iostream>
+#include <sstream>
+#include <vector>
 #include "GameEngine.h"
 #include "Physics.h"
 
@@ -28,32 +31,54 @@ void ScenePlay::loadLevel(const std::string& filename)
     // reset the entity manager every time we load a level
     m_entityManager = EntityManager();
 
+    std::ifstream file;
+    file.open(m_levelPath);
+    if (!file.is_open())
+    {
+        std::cout << "Failed to load level file: " << filename << std::endl;
+        return;
+    }
+
+    std::string line;
+    std::vector<std::string> allLine;
+
+    while (std::getline(file, line))
+    {
+        allLine.push_back(line);
+    }
+
+    file.close();
+
+    for (auto& line : allLine)
+    {
+        std::stringstream levelstream(line);
+        std::string type;
+        levelstream >> type;
+        if (type == "Tile")
+        {
+            std::string name;
+            float gridX;
+            float gridY;
+            levelstream >> name >> gridX >> gridY;
+            auto tile = m_entityManager.addEntity("tile");
+            tile->addComponent<CAnimation>(m_game->getAssets().getAnimation(name), true);
+            tile->addComponent<CTransform>(gridToMidPixel(gridX, gridY, tile),
+                                           tile->getComponent<CAnimation>().animation.getScale());
+            tile->addComponent<CBoundingBox>(tile->getComponent<CAnimation>().animation.getSize());
+        }
+        else if (type == "Player")
+        {
+            levelstream >> m_playerConfig.X >> m_playerConfig.Y >> m_playerConfig.CX
+                >> m_playerConfig.CY >> m_playerConfig.SPEED >> m_playerConfig.MAXSPEED
+                >> m_playerConfig.JUMP >> m_playerConfig.GRAVITY >> m_playerConfig.WEAPONS;
+        }
+    }
+
     // TODO: read in the level file and add the appropriate entities
     //       use the PlayerConfig struct m_playerConfig to store player properties
 
     // NOTE: all of the code below is sample code, it should be removed
     spawnPlayer();
-
-    auto brick = m_entityManager.addEntity("tile");
-    brick->addComponent<CAnimation>(m_game->getAssets().getAnimation("Brick"), true);
-    brick->addComponent<CTransform>(Vec2(224, 600),
-                                    brick->getComponent<CAnimation>().animation.getScale());
-    brick->addComponent<CBoundingBox>(brick->getComponent<CAnimation>().animation.getSize());
-
-    auto brick2 = m_entityManager.addEntity("tile");
-    brick2->addComponent<CAnimation>(m_game->getAssets().getAnimation("Brick"), true);
-    brick2->addComponent<CTransform>(Vec2(304, 520),
-                                     brick2->getComponent<CAnimation>().animation.getScale());
-    brick2->addComponent<CBoundingBox>(brick2->getComponent<CAnimation>().animation.getSize());
-
-    /*auto block = m_entityManager.addEntity("tile");
-    block->addComponent<CAnimation>(m_game->getAssets().getAnimation("Block"), true);
-    block->addComponent<CTransform>(Vec2(224, 480));
-    block->addComponent<CBoundingBox>(m_game->getAssets().getAnimation("Block").getSize());
-
-    auto question = m_entityManager.addEntity("tile");
-    question->addComponent<CAnimation>(m_game->getAssets().getAnimation("Question"), true);
-    question->addComponent<CTransform>(Vec2(352, 480));*/
 }
 
 ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath) :
@@ -82,7 +107,7 @@ void ScenePlay::spawnPlayer()
     m_player->addComponent<CTransform>(Vec2(224, 352),
                                        m_player->getComponent<CAnimation>().animation.getScale());
     m_player->addComponent<CBoundingBox>(m_player->getComponent<CAnimation>().animation.getSize());
-    m_player->addComponent<CGravity>(0.1);
+    m_player->addComponent<CGravity>(m_playerConfig.GRAVITY);
 }
 
 void ScenePlay::sAnimation()
@@ -116,7 +141,7 @@ void ScenePlay::sMovement()
     if (m_player->getComponent<CInput>().up)
     {
         m_player->getComponent<CState>().state = "air";
-        playerVelocity.y                       = -3;
+        playerVelocity.y                       = -m_playerConfig.JUMP;
     }
     if (m_player->getComponent<CInput>().left)
     {
@@ -124,7 +149,7 @@ void ScenePlay::sMovement()
         {
             m_player->getComponent<CState>().state = "run";
         }
-        playerVelocity.x = -3;
+        playerVelocity.x = -m_playerConfig.SPEED;
     }
     else if (m_player->getComponent<CInput>().right)
     {
@@ -132,7 +157,7 @@ void ScenePlay::sMovement()
         {
             m_player->getComponent<CState>().state = "run";
         }
-        playerVelocity.x = 3;
+        playerVelocity.x = m_playerConfig.SPEED;
     }
 
     m_player->getComponent<CTransform>().velocity = playerVelocity;
@@ -177,7 +202,9 @@ void ScenePlay::sCollision()
                 && m_player->getComponent<CTransform>().previoutPosition.y
                        < entity->getComponent<CTransform>().previoutPosition.y)
             {
-                m_player->getComponent<CTransform>().position.y -= overlap.y;
+                auto& transform = m_player->getComponent<CTransform>();
+                transform.position.y -= overlap.y;
+                transform.velocity.y                   = 0;
                 m_player->getComponent<CState>().state = "run";
             }
             else if (previousOverlap.x > 0
@@ -194,7 +221,7 @@ void ScenePlay::sCollision()
             }
             else if (previousOverlap.y > 0
                      && m_player->getComponent<CTransform>().previoutPosition.x
-                            < entity->getComponent<CTransform>().previoutPosition.x)
+                            > entity->getComponent<CTransform>().previoutPosition.x)
             {
                 m_player->getComponent<CTransform>().position.x += overlap.x;
             }
@@ -356,6 +383,14 @@ Vec2 ScenePlay::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity>
     //       You must use the Entity's Animation size to position it correctly
     //       The size of the grid width and height is stored in m_gridSize.x and m_gridSize.y
     //       The bottom-left corner of the Animation should align with the bottom left of the grid cell
+    float maxWidth  = (float)m_game->window().getSize().x;
+    float maxHeight = (float)m_game->window().getSize().y;
 
-    return Vec2();
+    float minusX = gridX * m_gridSize.x;
+    float minusY = gridY * m_gridSize.y;
+
+    float animX = entity->getComponent<CAnimation>().animation.getSize().x / 2.0f;
+    float animY = entity->getComponent<CAnimation>().animation.getSize().y / 2.0f;
+
+    return Vec2(minusX + animX, maxHeight - minusY - animY);
 }
