@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "Entity.h"
 #include "Vec2.h"
+#include "ecs/Entity.h"
 
 class Physics
 {

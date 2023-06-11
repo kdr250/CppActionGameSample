@@ -4,8 +4,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include "GameEngine.h"
-#include "Physics.h"
+#include "../GameEngine.h"
+#include "../Physics.h"
 
 void ScenePlay::init(const std::string& levelPath)
 {

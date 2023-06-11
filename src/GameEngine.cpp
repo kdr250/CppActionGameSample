@@ -1,6 +1,6 @@
 #include "GameEngine.h"
 #include <iostream>
-#include "SceneMenu.h"
+#include "scene/SceneMenu.h"
 
 void GameEngine::init(const std::string& path)
 {

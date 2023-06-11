@@ -1,6 +1,6 @@
 #include "SceneMenu.h"
 #include <iostream>
-#include "GameEngine.h"
+#include "../GameEngine.h"
 #include "ScenePlay.h"
 
 void SceneMenu::init()

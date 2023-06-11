@@ -2,8 +2,8 @@
 
 #include <map>
 #include <memory>
-#include "Action.h"
-#include "EntityManager.h"
+#include "../Action.h"
+#include "../ecs/EntityManager.h"
 
 class GameEngine;
 

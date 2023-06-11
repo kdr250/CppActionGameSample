@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
-#include "Action.h"
+#include "../Action.h"
 #include "Scene.h"
 
 class SceneMenu : public Scene
