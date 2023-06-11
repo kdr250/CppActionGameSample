@@ -15,7 +15,7 @@ protected:
     std::string m_levelPath;
     PlayerConfg m_playerConfig;
     bool m_drawTextures   = true;
-    bool m_drawCollision  = true;
+    bool m_drawCollision  = false;
     bool m_drawGrid       = false;
     const Vec2 m_gridSize = {64, 64};
     sf::Text m_gridText;
