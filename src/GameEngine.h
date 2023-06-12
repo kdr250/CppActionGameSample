@@ -4,7 +4,7 @@
 #include <map>
 #include <memory>
 #include <string>
-#include "Assets.h"
+#include "asset/Assets.h"
 #include "scene/Scene.h"
 
 typedef std::map<std::string, std::shared_ptr<Scene>> SceneMap;

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "../Animation.h"
-#include "../Vec2.h"
+#include "../asset/Animation.h"
+#include "../physics/Vec2.h"
 
 class Component
 {

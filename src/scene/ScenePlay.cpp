@@ -5,7 +5,7 @@
 #include <sstream>
 #include <vector>
 #include "../GameEngine.h"
-#include "../Physics.h"
+#include "../physics/Physics.h"
 
 void ScenePlay::init(const std::string& levelPath)
 {
