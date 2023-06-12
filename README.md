@@ -1,7 +1,13 @@
-# SfmlCmakeSample
-SFMLをCMakeでビルドするサンプルです
+# CppActionGameSample
+横スクロールアクションゲームのサンプルです
 
-## 参考にしたURL
-[SFML as a Dependency in a CMake Project](https://medium.com/@RileyEntertainmentGameDev/sfml-as-a-dependency-in-a-cmake-project-a37be848243e)<br>
-[sfml-cmake-setup](https://github.com/ryantherileyman/cmake-testing-grounds/tree/main/learning-sfml/sfml-intro/setup-manual/sfml-cmake-setup)<br>
-[VS Code で C++ のビルド環境を整える](https://guinpen98.github.io/VuePress/articles/vscode-cmake.html) ※VS Codeを使う場合
+## 開発環境
+- Windowsの場合
+	- Visual Studio 2022
+	- CMake
+
+- Macの場合
+	- Visual Studio Code
+	- C++の拡張機能
+	- CMakeの拡張機能<br>
+	[VS Code で C++ のビルド環境を整える](https://guinpen98.github.io/VuePress/articles/vscode-cmake.html) を参考にしてセットアップ
