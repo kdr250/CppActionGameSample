@@ -31,8 +31,8 @@ Vec2 Physics::getPreviousOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Enti
     auto& transformB   = b->getComponent<CTransform>();
     auto& boundingBoxB = b->getComponent<CBoundingBox>();
 
-    float distanceX = std::abs(transformA.previoutPosition.x - transformB.previoutPosition.x);
-    float distanceY = std::abs(transformA.previoutPosition.y - transformB.previoutPosition.y);
+    float distanceX = std::abs(transformA.previousPosition.x - transformB.previousPosition.x);
+    float distanceY = std::abs(transformA.previousPosition.y - transformB.previousPosition.y);
 
     float ox = boundingBoxA.halfSize.x + boundingBoxB.halfSize.x - distanceX;
     float oy = boundingBoxA.halfSize.y + boundingBoxB.halfSize.y - distanceY;

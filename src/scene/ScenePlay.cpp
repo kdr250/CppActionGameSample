@@ -134,8 +134,10 @@ void ScenePlay::sMovement()
 {
     Vec2 playerVelocity(0, m_player->getComponent<CTransform>().velocity.y);
 
-    if (m_player->getComponent<CInput>().up)
+    if (m_player->getComponent<CInput>().up
+        && m_player->getComponent<CInput>().upCount <= CInput::MAX_UP_COUNT)
     {
+        m_player->getComponent<CInput>().upCount++;
         m_player->getComponent<CState>().state = "air";
         playerVelocity.y                       = -m_playerConfig.JUMP;
     }
@@ -165,7 +167,7 @@ void ScenePlay::sMovement()
             entity->getComponent<CTransform>().velocity.y +=
                 entity->getComponent<CGravity>().gravity;
         }
-        entity->getComponent<CTransform>().previoutPosition =
+        entity->getComponent<CTransform>().previousPosition =
             entity->getComponent<CTransform>().position;
         entity->getComponent<CTransform>().position += entity->getComponent<CTransform>().velocity;
 
@@ -195,29 +197,30 @@ void ScenePlay::sCollision()
         {
             Vec2 previousOverlap = Physics::getPreviousOverlap(m_player, entity);
             if (previousOverlap.x > 0
-                && m_player->getComponent<CTransform>().previoutPosition.y
-                       < entity->getComponent<CTransform>().previoutPosition.y)
+                && m_player->getComponent<CTransform>().previousPosition.y
+                       < entity->getComponent<CTransform>().previousPosition.y)
             {
                 auto& transform = m_player->getComponent<CTransform>();
                 transform.position.y -= overlap.y;
-                transform.velocity.y                   = 0;
-                m_player->getComponent<CState>().state = "run";
+                transform.velocity.y                     = 0;
+                m_player->getComponent<CInput>().upCount = 0;
+                m_player->getComponent<CState>().state   = "run";
             }
             else if (previousOverlap.x > 0
-                     && m_player->getComponent<CTransform>().previoutPosition.y
-                            > entity->getComponent<CTransform>().previoutPosition.y)
+                     && m_player->getComponent<CTransform>().previousPosition.y
+                            > entity->getComponent<CTransform>().previousPosition.y)
             {
                 m_player->getComponent<CTransform>().position.y += overlap.y;
             }
             if (previousOverlap.y > 0
-                && m_player->getComponent<CTransform>().previoutPosition.x
-                       < entity->getComponent<CTransform>().previoutPosition.x)
+                && m_player->getComponent<CTransform>().previousPosition.x
+                       < entity->getComponent<CTransform>().previousPosition.x)
             {
                 m_player->getComponent<CTransform>().position.x -= overlap.x;
             }
             else if (previousOverlap.y > 0
-                     && m_player->getComponent<CTransform>().previoutPosition.x
-                            > entity->getComponent<CTransform>().previoutPosition.x)
+                     && m_player->getComponent<CTransform>().previousPosition.x
+                            > entity->getComponent<CTransform>().previousPosition.x)
             {
                 m_player->getComponent<CTransform>().position.x += overlap.x;
             }
@@ -336,7 +339,14 @@ void ScenePlay::sDoAction(const Action& action)
         }
         else if (action.name() == "UP")
         {
-            m_player->getComponent<CInput>().up = true;
+            if (m_player->getComponent<CInput>().upCount == 0)
+            {
+                m_player->getComponent<CInput>().up = true;
+            }
+            else
+            {
+                m_player->getComponent<CInput>().up = false;
+            }
         }
         else if (action.name() == "LEFT")
         {
