@@ -14,13 +14,13 @@ class CTransform : public Component
 {
 public:
     Vec2 position         = {0.0, 0.0};
-    Vec2 previoutPosition = {0.0, 0.0};
+    Vec2 previousPosition = {0.0, 0.0};
     Vec2 velocity         = {0.0, 0.0};
     Vec2 scale            = {1.0, 1.0};
     double angle          = 0;
 
     CTransform() {}
-    CTransform(const Vec2& p, const Vec2& s) : position(p), previoutPosition(p), scale(s) {}
+    CTransform(const Vec2& p, const Vec2& s) : position(p), previousPosition(p), scale(s) {}
 };
 
 class CLifespan : public Component
