@@ -134,8 +134,10 @@ void ScenePlay::sMovement()
 {
     Vec2 playerVelocity(0, m_player->getComponent<CTransform>().velocity.y);
 
-    if (m_player->getComponent<CInput>().up)
+    if (m_player->getComponent<CInput>().up
+        && m_player->getComponent<CInput>().upCount <= CInput::MAX_UP_COUNT)
     {
+        m_player->getComponent<CInput>().upCount++;
         m_player->getComponent<CState>().state = "air";
         playerVelocity.y                       = -m_playerConfig.JUMP;
     }
@@ -200,8 +202,9 @@ void ScenePlay::sCollision()
             {
                 auto& transform = m_player->getComponent<CTransform>();
                 transform.position.y -= overlap.y;
-                transform.velocity.y                   = 0;
-                m_player->getComponent<CState>().state = "run";
+                transform.velocity.y                     = 0;
+                m_player->getComponent<CInput>().upCount = 0;
+                m_player->getComponent<CState>().state   = "run";
             }
             else if (previousOverlap.x > 0
                      && m_player->getComponent<CTransform>().previousPosition.y
@@ -336,7 +339,14 @@ void ScenePlay::sDoAction(const Action& action)
         }
         else if (action.name() == "UP")
         {
-            m_player->getComponent<CInput>().up = true;
+            if (m_player->getComponent<CInput>().upCount == 0)
+            {
+                m_player->getComponent<CInput>().up = true;
+            }
+            else
+            {
+                m_player->getComponent<CInput>().up = false;
+            }
         }
         else if (action.name() == "LEFT")
         {
