@@ -24,6 +24,8 @@ protected:
 
     void loadLevel(const std::string& filename);
 
+    void resolveCollision(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> tile);
+
 public:
     ScenePlay(GameEngine* gameEngie, const std::string& levelPath);
 
