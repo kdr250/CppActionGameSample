@@ -65,3 +65,6 @@ Tile Brick 68 0
 Tile Brick 69 0
 Tile Brick 70 0
 Player 2 6 48 48 5 20 20 0.75 Buster
+Enemy Slime 5 3
+Enemy Slime 21 3
+Enemy Slime 37 3

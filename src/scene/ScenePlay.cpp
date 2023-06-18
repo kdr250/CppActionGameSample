@@ -72,9 +72,60 @@ void ScenePlay::loadLevel(const std::string& filename)
                 >> m_playerConfig.CY >> m_playerConfig.SPEED >> m_playerConfig.MAXSPEED
                 >> m_playerConfig.JUMP >> m_playerConfig.GRAVITY >> m_playerConfig.WEAPONS;
         }
+        else if (type == "Enemy")
+        {
+            std::string name;
+            float gridX;
+            float gridY;
+            levelstream >> name >> gridX >> gridY;
+            auto enemy = m_entityManager.addEntity("enemy");
+            enemy->addComponent<CAnimation>(m_game->getAssets().getAnimation(name), true);
+            enemy->addComponent<CTransform>(gridToMidPixel(gridX, gridY, enemy),
+                                            enemy->getComponent<CAnimation>().animation.getScale());
+            enemy->addComponent<CBoundingBox>(
+                enemy->getComponent<CAnimation>().animation.getSize());
+            enemy->addComponent<CGravity>(0.5);
+        }
     }
 
     spawnPlayer();
+}
+
+void ScenePlay::resolveCollision(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> tile)
+{
+    Vec2 overlap = Physics::getOverlap(entity, tile);
+    if (overlap.x > 0 && overlap.y > 0)
+    {
+        Vec2 previousOverlap = Physics::getPreviousOverlap(entity, tile);
+        if (previousOverlap.x > 0
+            && entity->getComponent<CTransform>().previousPosition.y
+                   < tile->getComponent<CTransform>().previousPosition.y)
+        {
+            auto& transform = entity->getComponent<CTransform>();
+            transform.position.y -= overlap.y;
+            transform.velocity.y                   = 0;
+            entity->getComponent<CInput>().upCount = 0;
+            entity->getComponent<CState>().state   = "run";
+        }
+        else if (previousOverlap.x > 0
+                 && entity->getComponent<CTransform>().previousPosition.y
+                        > tile->getComponent<CTransform>().previousPosition.y)
+        {
+            entity->getComponent<CTransform>().position.y += overlap.y;
+        }
+        if (previousOverlap.y > 0
+            && entity->getComponent<CTransform>().previousPosition.x
+                   < tile->getComponent<CTransform>().previousPosition.x)
+        {
+            entity->getComponent<CTransform>().position.x -= overlap.x;
+        }
+        else if (previousOverlap.y > 0
+                 && entity->getComponent<CTransform>().previousPosition.x
+                        > tile->getComponent<CTransform>().previousPosition.x)
+        {
+            entity->getComponent<CTransform>().position.x += overlap.x;
+        }
+    }
 }
 
 ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath) :
@@ -108,10 +159,15 @@ void ScenePlay::spawnPlayer()
 
 void ScenePlay::spawnBullet()
 {
-    if (m_player->getComponent<CInput>().shoot)
-    {
-        // TODO: Not Yet Implemented
-    }
+    auto& playerTransform = m_player->getComponent<CTransform>();
+    float bulletVelocityX = playerTransform.scale.x >= 0 ? 15.0f : -15.0f;
+
+    auto bullet = m_entityManager.addEntity("bullet");
+    bullet->addComponent<CAnimation>(m_game->getAssets().getAnimation("Bullet"), true);
+    bullet->addComponent<CTransform>(playerTransform.position,
+                                     Vec2(bulletVelocityX, 0),
+                                     bullet->getComponent<CAnimation>().animation.getScale());
+    bullet->addComponent<CBoundingBox>(bullet->getComponent<CAnimation>().animation.getSize());
 }
 
 void ScenePlay::sAnimation()
@@ -135,11 +191,16 @@ void ScenePlay::sAnimation()
     // TODO: for each entity with an animation, call entity->getComponent<CAnimation>().animation.update()
     //       if the animation is not repeated, and it has ended, destroy the entity
 
-    m_player->getComponent<CAnimation>().animation.update();
-
-    for (auto bullet : m_entityManager.getEntities("bullet"))
+    for (auto entity : m_entityManager.getEntities())
     {
-        bullet->getComponent<CTransform>().angle += 10.0;
+        if (entity->tag() == "bullet")
+        {
+            entity->getComponent<CTransform>().angle += 10.0;
+        }
+        else if (entity->hasComponent<CAnimation>())
+        {
+            entity->getComponent<CAnimation>().animation.update();
+        }
     }
 }
 
@@ -173,15 +234,7 @@ void ScenePlay::sMovement()
     }
     if (m_player->getComponent<CInput>().shoot && m_player->getComponent<CInput>().canShoot)
     {
-        auto& playerTransform = m_player->getComponent<CTransform>();
-        float bulletVelocityX = playerTransform.scale.x >= 0 ? 15.0f : -15.0f;
-
-        auto bullet = m_entityManager.addEntity("bullet");
-        bullet->addComponent<CAnimation>(m_game->getAssets().getAnimation("Bullet"), true);
-        bullet->addComponent<CTransform>(playerTransform.position,
-                                         Vec2(bulletVelocityX, 0),
-                                         bullet->getComponent<CAnimation>().animation.getScale());
-
+        spawnBullet();
         m_player->getComponent<CInput>().canShoot = false;
     }
 
@@ -217,39 +270,25 @@ void ScenePlay::sEnemySpawner() {}
 
 void ScenePlay::sCollision()
 {
-    for (auto entity : m_entityManager.getEntities("tile"))
+    for (auto tile : m_entityManager.getEntities("tile"))
     {
-        Vec2 overlap = Physics::getOverlap(m_player, entity);
-        if (overlap.x > 0 && overlap.y > 0)
+        resolveCollision(m_player, tile);
+        for (auto enemy : m_entityManager.getEntities("enemy"))
         {
-            Vec2 previousOverlap = Physics::getPreviousOverlap(m_player, entity);
-            if (previousOverlap.x > 0
-                && m_player->getComponent<CTransform>().previousPosition.y
-                       < entity->getComponent<CTransform>().previousPosition.y)
+            resolveCollision(enemy, tile);
+        }
+    }
+    for (auto bullet : m_entityManager.getEntities("bullet"))
+    {
+        for (auto enemy : m_entityManager.getEntities("enemy"))
+        {
+            float distance = bullet->getComponent<CTransform>().position.dist(
+                enemy->getComponent<CTransform>().position);
+            float radius = bullet->getComponent<CBoundingBox>().halfSize.length();
+            if (distance <= radius)
             {
-                auto& transform = m_player->getComponent<CTransform>();
-                transform.position.y -= overlap.y;
-                transform.velocity.y                     = 0;
-                m_player->getComponent<CInput>().upCount = 0;
-                m_player->getComponent<CState>().state   = "run";
-            }
-            else if (previousOverlap.x > 0
-                     && m_player->getComponent<CTransform>().previousPosition.y
-                            > entity->getComponent<CTransform>().previousPosition.y)
-            {
-                m_player->getComponent<CTransform>().position.y += overlap.y;
-            }
-            if (previousOverlap.y > 0
-                && m_player->getComponent<CTransform>().previousPosition.x
-                       < entity->getComponent<CTransform>().previousPosition.x)
-            {
-                m_player->getComponent<CTransform>().position.x -= overlap.x;
-            }
-            else if (previousOverlap.y > 0
-                     && m_player->getComponent<CTransform>().previousPosition.x
-                            > entity->getComponent<CTransform>().previousPosition.x)
-            {
-                m_player->getComponent<CTransform>().position.x += overlap.x;
+                bullet->destroy();
+                enemy->destroy();
             }
         }
     }
