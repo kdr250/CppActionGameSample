@@ -15,10 +15,10 @@ void ScenePlay::init(const std::string& levelPath)
     registerAction(sf::Keyboard::C, "TOGGLE_COLLISION");
     registerAction(sf::Keyboard::G, "TOGGLE_GRID");
 
-    // TODO: Register all other gameplay actions
     registerAction(sf::Keyboard::W, "UP");
     registerAction(sf::Keyboard::A, "LEFT");
     registerAction(sf::Keyboard::D, "RIGHT");
+    registerAction(sf::Keyboard::Space, "SHOOT");
 
     m_gridText.setCharacterSize(12);
     m_gridText.setFont(m_game->getAssets().getFont("Roboto-Light.ttf"));
@@ -106,6 +106,14 @@ void ScenePlay::spawnPlayer()
     m_player->addComponent<CGravity>(m_playerConfig.GRAVITY);
 }
 
+void ScenePlay::spawnBullet()
+{
+    if (m_player->getComponent<CInput>().shoot)
+    {
+        // TODO: Not Yet Implemented
+    }
+}
+
 void ScenePlay::sAnimation()
 {
     if (m_player->getComponent<CState>().state == "air"
@@ -128,6 +136,11 @@ void ScenePlay::sAnimation()
     //       if the animation is not repeated, and it has ended, destroy the entity
 
     m_player->getComponent<CAnimation>().animation.update();
+
+    for (auto bullet : m_entityManager.getEntities("bullet"))
+    {
+        bullet->getComponent<CTransform>().angle += 10.0;
+    }
 }
 
 void ScenePlay::sMovement()
@@ -156,6 +169,20 @@ void ScenePlay::sMovement()
             m_player->getComponent<CState>().state = "run";
         }
         playerVelocity.x = m_playerConfig.SPEED;
+        playerVelocity.x = m_playerConfig.SPEED;
+    }
+    if (m_player->getComponent<CInput>().shoot && m_player->getComponent<CInput>().canShoot)
+    {
+        auto& playerTransform = m_player->getComponent<CTransform>();
+        float bulletVelocityX = playerTransform.scale.x >= 0 ? 15.0f : -15.0f;
+
+        auto bullet = m_entityManager.addEntity("bullet");
+        bullet->addComponent<CAnimation>(m_game->getAssets().getAnimation("Bullet"), true);
+        bullet->addComponent<CTransform>(playerTransform.position,
+                                         Vec2(bulletVelocityX, 0),
+                                         bullet->getComponent<CAnimation>().animation.getScale());
+
+        m_player->getComponent<CInput>().canShoot = false;
     }
 
     m_player->getComponent<CTransform>().velocity = playerVelocity;
@@ -356,6 +383,10 @@ void ScenePlay::sDoAction(const Action& action)
         {
             m_player->getComponent<CInput>().right = true;
         }
+        else if (action.name() == "SHOOT")
+        {
+            m_player->getComponent<CInput>().shoot = true;
+        }
     }
     else if (action.type() == "END")
     {
@@ -370,6 +401,11 @@ void ScenePlay::sDoAction(const Action& action)
         else if (action.name() == "RIGHT")
         {
             m_player->getComponent<CInput>().right = false;
+        }
+        else if (action.name() == "SHOOT")
+        {
+            m_player->getComponent<CInput>().shoot    = false;
+            m_player->getComponent<CInput>().canShoot = true;
         }
     }
 }

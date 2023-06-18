@@ -30,6 +30,7 @@ public:
     void update();
 
     void spawnPlayer();
+    void spawnBullet();
 
     void sAnimation();
     void sMovement();

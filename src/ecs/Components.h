@@ -21,6 +21,10 @@ public:
 
     CTransform() {}
     CTransform(const Vec2& p, const Vec2& s) : position(p), previousPosition(p), scale(s) {}
+    CTransform(const Vec2& p, const Vec2& v, const Vec2& s) :
+        position(p), previousPosition(p), velocity(v), scale(s)
+    {
+    }
 };
 
 class CLifespan : public Component
@@ -41,6 +45,7 @@ public:
     bool right                        = false;
     bool down                         = false;
     bool shoot                        = false;
+    bool canShoot                     = true;
     int upCount                       = 0;
     static constexpr int MAX_UP_COUNT = 5;
 
