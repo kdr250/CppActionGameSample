@@ -29,25 +29,25 @@ void Assets::loadFromFile(const std::string path)
     {
         std::stringstream assetStream(line);
         std::string type;
-        assetStream >> type;
+        std::string name;
+        assetStream >> type >> name;
         if (type == "Texture")
         {
-            std::string name;
             std::string path;
-            assetStream >> name >> path;
+            assetStream >> path;
             addTexture(name, path);
         }
         else if (type == "Animation")
         {
-            std::string name;
             std::string textureName;
             int frameCount;
             int speed;
             float scale;
-            assetStream >> name >> textureName >> frameCount >> speed >> scale;
+            assetStream >> textureName >> frameCount >> speed >> scale;
             Animation animation(name, m_textures[textureName], frameCount, speed, scale);
             addAnimation(name, animation);
         }
+        std::cout << type << " " << name << " is loaded!" << std::endl;
     }
 }
 
