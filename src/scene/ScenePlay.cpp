@@ -246,6 +246,11 @@ void ScenePlay::sAnimation()
 
 void ScenePlay::sMovement()
 {
+    if (m_paused)
+    {
+        return;
+    }
+
     Vec2 playerVelocity(0, m_player->getComponent<CTransform>().velocity.y);
 
     if (m_player->getComponent<CInput>().up
