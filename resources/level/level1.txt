@@ -54,6 +54,7 @@ Tile Brick 57 0
 Tile Brick 58 0
 Tile Brick 59 0
 Tile Brick 60 0
+Goal Door 61 1
 Tile Brick 61 0
 Tile Brick 62 0
 Tile Brick 63 0

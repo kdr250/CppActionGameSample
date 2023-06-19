@@ -86,6 +86,18 @@ void ScenePlay::loadLevel(const std::string& filename)
                 enemy->getComponent<CAnimation>().animation.getSize());
             enemy->addComponent<CGravity>(0.5);
         }
+        else if (type == "Goal")
+        {
+            std::string name;
+            float gridX;
+            float gridY;
+            levelstream >> name >> gridX >> gridY;
+            auto goal = m_entityManager.addEntity("goal");
+            goal->addComponent<CAnimation>(m_game->getAssets().getAnimation(name), true);
+            goal->addComponent<CTransform>(gridToMidPixel(gridX, gridY, goal),
+                                           goal->getComponent<CAnimation>().animation.getScale());
+            goal->addComponent<CBoundingBox>(goal->getComponent<CAnimation>().animation.getSize());
+        }
     }
 
     spawnPlayer();
