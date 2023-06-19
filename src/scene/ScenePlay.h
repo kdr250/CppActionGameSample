@@ -12,7 +12,7 @@ class ScenePlay : public Scene
 
 protected:
     std::shared_ptr<Entity> m_player;
-    std::string m_levelPath;
+    int m_levelId = 1;
     PlayerConfg m_playerConfig;
     bool m_drawTextures   = true;
     bool m_drawCollision  = false;
@@ -24,10 +24,14 @@ protected:
 
     void loadLevel(const std::string& filename);
 
-    void resolveCollision(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> tile);
+    void resolveTileCollision(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> tile);
+
+    void levelClear();
 
 public:
     ScenePlay(GameEngine* gameEngie, const std::string& levelPath);
+
+    ScenePlay(GameEngine* gameEngie, const std::string& levelPath, const int levelId);
 
     void update();
 
