@@ -154,9 +154,11 @@ void ScenePlay::levelClear()
     else
     {
         m_paused       = true;
+        int centerX    = m_game->window().getSize().x / 2;
+        int centerY    = m_game->window().getSize().y / 2;
         auto gameClear = m_entityManager.addEntity("gameClear");
         gameClear->addComponent<CAnimation>(m_game->getAssets().getAnimation("GameClear"), true);
-        gameClear->addComponent<CTransform>(Vec2(500, 200), Vec2(1, 1));
+        gameClear->addComponent<CTransform>(Vec2(centerX, centerY), Vec2(1, 1));
     }
 }
 
@@ -296,6 +298,11 @@ void ScenePlay::sMovement()
             entity->getComponent<CTransform>().scale.x *= -1;
         }
     }
+
+    if (m_player->getComponent<CTransform>().position.y > m_game->window().getSize().y + 300)
+    {
+        m_game->changeScene("PLAY", std::make_shared<ScenePlay>(m_game, m_levelPath, m_levelId));
+    }
 }
 
 void ScenePlay::sLifeSpan()
@@ -431,6 +438,10 @@ void ScenePlay::sRender()
 
 void ScenePlay::sDoAction(const Action& action)
 {
+    if (m_paused)
+    {
+        return;
+    }
     if (action.type() == "START")
     {
         if (action.name() == "TOGGLE_TEXTURE")
