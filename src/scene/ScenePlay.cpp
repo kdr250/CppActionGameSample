@@ -1,5 +1,6 @@
 #include "ScenePlay.h"
 #include <cmath>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -32,7 +33,7 @@ void ScenePlay::loadLevel(const std::string& filename)
     m_entityManager = EntityManager();
 
     std::ifstream file;
-    file.open(m_levelPath);
+    file.open(filename);
     if (!file.is_open())
     {
         std::cout << "Failed to load level file: " << filename << std::endl;
@@ -86,12 +87,24 @@ void ScenePlay::loadLevel(const std::string& filename)
                 enemy->getComponent<CAnimation>().animation.getSize());
             enemy->addComponent<CGravity>(0.5);
         }
+        else if (type == "Goal")
+        {
+            std::string name;
+            float gridX;
+            float gridY;
+            levelstream >> name >> gridX >> gridY;
+            auto goal = m_entityManager.addEntity("goal");
+            goal->addComponent<CAnimation>(m_game->getAssets().getAnimation(name), true);
+            goal->addComponent<CTransform>(gridToMidPixel(gridX, gridY, goal),
+                                           goal->getComponent<CAnimation>().animation.getScale());
+            goal->addComponent<CBoundingBox>(goal->getComponent<CAnimation>().animation.getSize());
+        }
     }
 
     spawnPlayer();
 }
 
-void ScenePlay::resolveCollision(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> tile)
+void ScenePlay::resolveTileCollision(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> tile)
 {
     Vec2 overlap = Physics::getOverlap(entity, tile);
     if (overlap.x > 0 && overlap.y > 0)
@@ -128,10 +141,34 @@ void ScenePlay::resolveCollision(std::shared_ptr<Entity> entity, std::shared_ptr
     }
 }
 
-ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath) :
-    Scene(gameEngie), m_levelPath(levelPath)
+void ScenePlay::levelClear()
 {
-    init(m_levelPath);
+    int nextLevelId       = m_levelId + 1;
+    std::string levelPath = "resources/level/level" + std::to_string(nextLevelId) + ".txt";
+    bool hasNextLevel     = std::filesystem::exists(levelPath);
+    if (hasNextLevel)
+    {
+        m_levelId++;
+        m_game->changeScene("PLAY", std::make_shared<ScenePlay>(m_game, levelPath, nextLevelId));
+    }
+    else
+    {
+        m_paused       = true;
+        auto gameClear = m_entityManager.addEntity("gameClear");
+        gameClear->addComponent<CAnimation>(m_game->getAssets().getAnimation("GameClear"), true);
+        gameClear->addComponent<CTransform>(Vec2(500, 200), Vec2(1, 1));
+    }
+}
+
+ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath) : Scene(gameEngie)
+{
+    init(levelPath);
+}
+
+ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath, const int levelId) :
+    Scene(gameEngie), m_levelId(levelId)
+{
+    init(levelPath);
 }
 
 void ScenePlay::update()
@@ -272,10 +309,10 @@ void ScenePlay::sCollision()
 {
     for (auto tile : m_entityManager.getEntities("tile"))
     {
-        resolveCollision(m_player, tile);
+        resolveTileCollision(m_player, tile);
         for (auto enemy : m_entityManager.getEntities("enemy"))
         {
-            resolveCollision(enemy, tile);
+            resolveTileCollision(enemy, tile);
         }
     }
     for (auto bullet : m_entityManager.getEntities("bullet"))
@@ -290,6 +327,19 @@ void ScenePlay::sCollision()
                 bullet->destroy();
                 enemy->destroy();
             }
+        }
+    }
+
+    auto& goals = m_entityManager.getEntities("goal");
+    if (!goals.empty())
+    {
+        auto goal      = goals[0];
+        float distance = m_player->getComponent<CTransform>().position.dist(
+            goal->getComponent<CTransform>().position);
+        float halfSizeDistance = goal->getComponent<CBoundingBox>().halfSize.length();
+        if (distance <= halfSizeDistance)
+        {
+            levelClear();
         }
     }
 }
