@@ -13,6 +13,7 @@ class ScenePlay : public Scene
 protected:
     std::shared_ptr<Entity> m_player;
     int m_levelId = 1;
+    std::string m_levelPath;
     PlayerConfg m_playerConfig;
     bool m_drawTextures   = true;
     bool m_drawCollision  = false;

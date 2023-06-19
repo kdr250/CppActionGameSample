@@ -162,13 +162,14 @@ void ScenePlay::levelClear()
     }
 }
 
-ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath) : Scene(gameEngie)
+ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath) :
+    Scene(gameEngie), m_levelPath(levelPath)
 {
     init(levelPath);
 }
 
 ScenePlay::ScenePlay(GameEngine* gameEngie, const std::string& levelPath, const int levelId) :
-    Scene(gameEngie), m_levelId(levelId)
+    Scene(gameEngie), m_levelId(levelId), m_levelPath(levelPath)
 {
     init(levelPath);
 }
@@ -301,7 +302,7 @@ void ScenePlay::sMovement()
 
     if (m_player->getComponent<CTransform>().position.y > m_game->window().getSize().y + 300)
     {
-        m_game->changeScene("PLAY", std::make_shared<ScenePlay>(m_game, m_levelPath, m_levelId));
+        m_game->changeScene("PLAY", std::make_shared<ScenePlay>(m_game, m_levelPath), true);
     }
 }
 
