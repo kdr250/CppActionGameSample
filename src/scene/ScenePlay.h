@@ -25,7 +25,7 @@ protected:
 
     void loadLevel(const std::string& filename);
 
-    void resolveTileCollision(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> tile);
+    bool resolveTileCollision(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> tile);
 
     void levelClear();
 

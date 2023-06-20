@@ -82,6 +82,7 @@ void ScenePlay::loadLevel(const std::string& filename)
             auto enemy = m_entityManager.addEntity("enemy");
             enemy->addComponent<CAnimation>(m_game->getAssets().getAnimation(name), true);
             enemy->addComponent<CTransform>(gridToMidPixel(gridX, gridY, enemy),
+                                            Vec2(3, 0),
                                             enemy->getComponent<CAnimation>().animation.getScale());
             enemy->addComponent<CBoundingBox>(
                 enemy->getComponent<CAnimation>().animation.getSize());
@@ -104,9 +105,10 @@ void ScenePlay::loadLevel(const std::string& filename)
     spawnPlayer();
 }
 
-void ScenePlay::resolveTileCollision(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> tile)
+bool ScenePlay::resolveTileCollision(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> tile)
 {
-    Vec2 overlap = Physics::getOverlap(entity, tile);
+    bool isSideOverlap = false;
+    Vec2 overlap       = Physics::getOverlap(entity, tile);
     if (overlap.x > 0 && overlap.y > 0)
     {
         Vec2 previousOverlap = Physics::getPreviousOverlap(entity, tile);
@@ -131,14 +133,17 @@ void ScenePlay::resolveTileCollision(std::shared_ptr<Entity> entity, std::shared
                    < tile->getComponent<CTransform>().previousPosition.x)
         {
             entity->getComponent<CTransform>().position.x -= overlap.x;
+            isSideOverlap = true;
         }
         else if (previousOverlap.y > 0
                  && entity->getComponent<CTransform>().previousPosition.x
                         > tile->getComponent<CTransform>().previousPosition.x)
         {
             entity->getComponent<CTransform>().position.x += overlap.x;
+            isSideOverlap = true;
         }
     }
+    return isSideOverlap;
 }
 
 void ScenePlay::levelClear()
@@ -307,7 +312,9 @@ void ScenePlay::sMovement()
 
     if (m_player->getComponent<CTransform>().position.y > m_game->window().getSize().y + 300)
     {
-        m_game->changeScene("PLAY", std::make_shared<ScenePlay>(m_game, m_levelPath), true);
+        m_game->changeScene("PLAY",
+                            std::make_shared<ScenePlay>(m_game, m_levelPath, m_levelId),
+                            true);
     }
 }
 
@@ -325,7 +332,19 @@ void ScenePlay::sCollision()
         resolveTileCollision(m_player, tile);
         for (auto enemy : m_entityManager.getEntities("enemy"))
         {
-            resolveTileCollision(enemy, tile);
+            bool isOverlap = resolveTileCollision(enemy, tile);
+            if (isOverlap)
+            {
+                enemy->getComponent<CTransform>().velocity.x *= -1;
+            }
+        }
+        for (auto bullet : m_entityManager.getEntities("bullet"))
+        {
+            bool isOverlap = resolveTileCollision(bullet, tile);
+            if (isOverlap)
+            {
+                bullet->destroy();
+            }
         }
     }
     for (auto bullet : m_entityManager.getEntities("bullet"))
@@ -340,6 +359,19 @@ void ScenePlay::sCollision()
                 bullet->destroy();
                 enemy->destroy();
             }
+        }
+    }
+
+    for (auto enemy : m_entityManager.getEntities("enemy"))
+    {
+        float distance = m_player->getComponent<CTransform>().position.dist(
+            enemy->getComponent<CTransform>().position);
+        float radius = enemy->getComponent<CBoundingBox>().halfSize.length();
+        if (distance <= radius)
+        {
+            m_game->changeScene("PLAY",
+                                std::make_shared<ScenePlay>(m_game, m_levelPath, m_levelId),
+                                true);
         }
     }
 
