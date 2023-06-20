@@ -40,7 +40,8 @@ Tile Brick 37 1
 Tile Brick 38 0
 Tile Brick 39 0
 Tile Brick 40 0
-Tile Brick 40 1
+Tile Brick 41 0
+Tile Brick 41 1
 Tile Brick 45 0
 Tile Brick 45 1
 Tile Brick 46 0
