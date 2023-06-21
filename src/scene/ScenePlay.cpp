@@ -213,6 +213,7 @@ void ScenePlay::spawnBullet()
                                      Vec2(bulletVelocityX, 0),
                                      bullet->getComponent<CAnimation>().animation.getScale());
     bullet->addComponent<CBoundingBox>(bullet->getComponent<CAnimation>().animation.getSize());
+    bullet->addComponent<CLifespan>(60);
 }
 
 void ScenePlay::sAnimation()
@@ -320,7 +321,24 @@ void ScenePlay::sMovement()
 
 void ScenePlay::sLifeSpan()
 {
-    // TODO: Check lifespan of entities that have them, and destroy them if they go over
+    for (auto entity : m_entityManager.getEntities())
+    {
+        if (!entity->hasComponent<CLifespan>())
+        {
+            continue;
+        }
+
+        auto& lifespan = entity->getComponent<CLifespan>();
+
+        if (lifespan.remaining <= 0)
+        {
+            entity->destroy();
+        }
+        else
+        {
+            lifespan.remaining--;
+        }
+    }
 }
 
 void ScenePlay::sEnemySpawner() {}
