@@ -13,6 +13,7 @@ void SceneMenu::init()
     m_menuText.setPosition(100, 100);
 
     registerAction(sf::Keyboard::Enter, "PLAY");
+    registerAction(sf::Keyboard::Escape, "QUIT");
 }
 
 SceneMenu::SceneMenu(GameEngine* gameEngine) : Scene(gameEngine)
@@ -27,6 +28,10 @@ void SceneMenu::update()
         m_game->changeScene("PLAY",
                             std::make_shared<ScenePlay>(m_game, "resources/level/level1.txt"));
     }
+    if (m_quit)
+    {
+        onEnd();
+    }
 }
 
 void SceneMenu::sRender()
@@ -34,7 +39,10 @@ void SceneMenu::sRender()
     m_game->window().draw(m_menuText);
 }
 
-void SceneMenu::onEnd() {}
+void SceneMenu::onEnd()
+{
+    m_game->quit();
+}
 
 void SceneMenu::sDoAction(const Action& action)
 {
@@ -43,6 +51,10 @@ void SceneMenu::sDoAction(const Action& action)
         if (action.name() == "PLAY")
         {
             m_start = true;
+        }
+        else if (action.name() == "QUIT")
+        {
+            m_quit = true;
         }
     }
 }

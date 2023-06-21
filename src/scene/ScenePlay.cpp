@@ -7,6 +7,7 @@
 #include <vector>
 #include "../GameEngine.h"
 #include "../physics/Physics.h"
+#include "SceneMenu.h"
 
 void ScenePlay::init(const std::string& levelPath)
 {
@@ -570,8 +571,7 @@ void ScenePlay::sDebug() {}
 
 void ScenePlay::onEnd()
 {
-    // TODO: When the scene ends, change back to the MENU scene
-    //       use m_game->changeScene(XXX)
+    m_game->changeScene("MENU", std::make_shared<SceneMenu>(m_game));
 }
 
 Vec2 ScenePlay::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity)
