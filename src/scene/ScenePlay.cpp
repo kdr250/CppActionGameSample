@@ -377,6 +377,12 @@ void ScenePlay::sCollision()
             {
                 bullet->destroy();
                 enemy->destroy();
+                auto explosion = m_entityManager.addEntity("explosion");
+                explosion->addComponent<CAnimation>(m_game->getAssets().getAnimation("Explosion"));
+                explosion->addComponent<CTransform>(
+                    enemy->getComponent<CTransform>().position,
+                    explosion->getComponent<CAnimation>().animation.getScale());
+                explosion->addComponent<CLifespan>(9);
             }
         }
     }
