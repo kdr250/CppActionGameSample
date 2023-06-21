@@ -7,6 +7,7 @@
 #include <vector>
 #include "../GameEngine.h"
 #include "../physics/Physics.h"
+#include "SceneMenu.h"
 
 void ScenePlay::init(const std::string& levelPath)
 {
@@ -213,6 +214,7 @@ void ScenePlay::spawnBullet()
                                      Vec2(bulletVelocityX, 0),
                                      bullet->getComponent<CAnimation>().animation.getScale());
     bullet->addComponent<CBoundingBox>(bullet->getComponent<CAnimation>().animation.getSize());
+    bullet->addComponent<CLifespan>(60);
 }
 
 void ScenePlay::sAnimation()
@@ -320,7 +322,24 @@ void ScenePlay::sMovement()
 
 void ScenePlay::sLifeSpan()
 {
-    // TODO: Check lifespan of entities that have them, and destroy them if they go over
+    for (auto entity : m_entityManager.getEntities())
+    {
+        if (!entity->hasComponent<CLifespan>())
+        {
+            continue;
+        }
+
+        auto& lifespan = entity->getComponent<CLifespan>();
+
+        if (lifespan.remaining <= 0)
+        {
+            entity->destroy();
+        }
+        else
+        {
+            lifespan.remaining--;
+        }
+    }
 }
 
 void ScenePlay::sEnemySpawner() {}
@@ -358,6 +377,12 @@ void ScenePlay::sCollision()
             {
                 bullet->destroy();
                 enemy->destroy();
+                auto explosion = m_entityManager.addEntity("explosion");
+                explosion->addComponent<CAnimation>(m_game->getAssets().getAnimation("Explosion"));
+                explosion->addComponent<CTransform>(
+                    enemy->getComponent<CTransform>().position,
+                    explosion->getComponent<CAnimation>().animation.getScale());
+                explosion->addComponent<CLifespan>(9);
             }
         }
     }
@@ -552,8 +577,7 @@ void ScenePlay::sDebug() {}
 
 void ScenePlay::onEnd()
 {
-    // TODO: When the scene ends, change back to the MENU scene
-    //       use m_game->changeScene(XXX)
+    m_game->changeScene("MENU", std::make_shared<SceneMenu>(m_game));
 }
 
 Vec2 ScenePlay::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity)

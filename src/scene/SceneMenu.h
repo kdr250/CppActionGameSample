@@ -17,6 +17,7 @@ protected:
     // TODO: load from Assets
     sf::Font m_font;
     bool m_start = false;
+    bool m_quit  = false;
 
     void init();
 
