@@ -23,7 +23,7 @@ void ScenePlay::init(const std::string& levelPath)
     registerAction(sf::Keyboard::Space, "SHOOT");
 
     m_gridText.setCharacterSize(12);
-    m_gridText.setFont(m_game->getAssets().getFont("Roboto-Light.ttf"));
+    m_gridText.setFont(m_game->getAssets().getFont("FontRobotoLight"));
 
     loadLevel(levelPath);
 }

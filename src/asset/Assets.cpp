@@ -31,7 +31,13 @@ void Assets::loadFromFile(const std::string path)
         std::string type;
         std::string name;
         assetStream >> type >> name;
-        if (type == "Texture")
+        if (type == "Font")
+        {
+            std::string path;
+            assetStream >> path;
+            addFont(name, path);
+        }
+        else if (type == "Texture")
         {
             std::string path;
             assetStream >> path;

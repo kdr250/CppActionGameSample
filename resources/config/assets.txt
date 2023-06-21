@@ -1,3 +1,5 @@
+Font FontRobotoLight resources/fonts/Roboto-Light.ttf
+Font FontRobotoBold resources/fonts/Roboto-Bold.ttf
 Texture TexIdle resources/texture/player_idle.png
 Texture TexRun resources/texture/player_run.png
 Texture TexJump resources/texture/player_jump.png
