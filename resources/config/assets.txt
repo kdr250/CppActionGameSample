@@ -13,7 +13,7 @@ Animation Run TexRun 8 15 4
 Animation Air TexJump 2 30 4
 Animation Brick TexBrick 1 1 4
 Animation Bullet TexBullet 1 1 2
-Animation Explosion TexExplosion 3 3 30
+Animation Explosion TexExplosion 3 3 10
 Animation Slime TexSlime 2 10 4
 Animation Door TexDoor 1 1 4
 Animation Chest TexChest 1 1 4
