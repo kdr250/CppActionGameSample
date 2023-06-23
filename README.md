@@ -1,6 +1,8 @@
 # CppActionGameSample
 横スクロールアクションゲームのサンプルです
 
+![screenshot](docs/test.png)
+
 ## 開発環境
 - Windowsの場合
 	- Visual Studio 2022
