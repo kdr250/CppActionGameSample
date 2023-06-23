@@ -18,6 +18,7 @@ protected:
     SceneMap m_sceneMap;
     size_t m_simulationSpeed = 1;
     bool m_running           = true;
+    bool m_screenshot        = false;
 
     void init(const std::string& path);
     void update();
@@ -39,4 +40,5 @@ public:
     sf::RenderWindow& window();
     Assets& getAssets();
     bool isRunning();
+    void takeScreenshot();
 };
