@@ -18,6 +18,7 @@ void GameEngine::update()
     sUserInput();
     currentScene()->update();
     currentScene()->sRender();
+    takeScreenshot();
     m_window.display();
 }
 
@@ -35,14 +36,7 @@ void GameEngine::sUserInput()
         {
             if (event.key.code == sf::Keyboard::X)
             {
-                std::cout << "try to save screenshot" << std::endl;
-                sf::Texture texture;
-                texture.create(m_window.getSize().x, m_window.getSize().y);
-                texture.update(m_window);
-                if (texture.copyToImage().saveToFile("test.png"))
-                {
-                    std::cout << "screenshot saved to test.png" << std::endl;
-                }
+                m_screenshot = true;
             }
         }
 
@@ -110,4 +104,20 @@ Assets& GameEngine::getAssets()
 bool GameEngine::isRunning()
 {
     return m_running && m_window.isOpen();
+}
+
+void GameEngine::takeScreenshot()
+{
+    if (m_screenshot)
+    {
+        std::cout << "try to save screenshot" << std::endl;
+        sf::Texture texture;
+        texture.create(m_window.getSize().x, m_window.getSize().y);
+        texture.update(m_window);
+        if (texture.copyToImage().saveToFile("test.png"))
+        {
+            std::cout << "screenshot saved to test.png" << std::endl;
+        }
+        m_screenshot = false;
+    }
 }
